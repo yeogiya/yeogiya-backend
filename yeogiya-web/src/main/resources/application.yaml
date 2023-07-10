@@ -4,6 +4,16 @@ spring:
     url: ENC(x6nBVqwNtC3FPXPUIzy3W0rqsCXP0UPDXT69VCX6M6tyjbrgoTkAj15L9v+k2uyzUa/gGYYfnbv1fzwhI+e1XMnk4NCH+m3Vs46XsY2hX1eEgvlUrICvGg==)
     username: ENC(uL7k1DzNozYov07EeJa/2g==)
     password: ENC(zYa4HBAWShBPBoxDA0FzXewAPXLtIXwA)
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
 # encryption
 jasypt:
