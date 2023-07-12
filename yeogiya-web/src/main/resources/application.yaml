@@ -21,3 +21,16 @@ jasypt:
     bean: jasyptStringEncryptor
     algorithm: PBEWithMD5AndDES
     iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+# 시크릿 키값
+jwt:
+  secret:
+    ENC(cpoAHqv2WL1MQ7OaOT7PCMQkvnRJP3CXEXh5VtQEAInbpe84tsrJjPkwQGOYUIxHZGQR+dV/NQkLmMmANHU853Pp/6P7faPt35UhWO73NdBR0XX2OjvgPT6FStasATCJsdQKJRu3OiR+wluPQB9wS9MmAqsvn37hV6p3vekJYcgg0tYpCl0mS6HhZCfO2H7qet4t7s+1sBndOnJw/c9MQPg/Ox/02BfgEudAyE3BIlh7PMzcCffw7bzMmxJMgeBLlt6nWbcJOhmWZGCxI+fruXeqZD52dXQGTEBvFVh0G0+Aa6oijDiWd0z95443PDvm726zrmcF260/xBm7S7oRFJMMngtr51XsrPqIb23S9MS+AkSLQrczaLAvTLHV4KGdw5Fbxt5Iykhg63aJDTsLB4eH/oN/LB7NRY+o19Ei06spxjnkGeq2KPZc492BGHFKvzQ7AJqU7yU=
+    )
