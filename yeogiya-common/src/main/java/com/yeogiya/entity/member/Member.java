@@ -2,11 +2,9 @@ package com.yeogiya.entity.member;
 
 import com.yeogiya.entity.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,6 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -50,6 +49,7 @@ public class Member extends BaseTimeEntity {
     private String profileImg;
 
     @NotNull
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "login_type", columnDefinition = "VARCHAR(10)")
     private LoginType loginType;
 
@@ -59,6 +59,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "warning_count", columnDefinition = "INT(11)")
     private int warningCount;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status", columnDefinition = "CHAR(1)")
     private Status status;
 

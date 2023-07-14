@@ -1,6 +1,7 @@
 package com.yeogiya.web.controller;
 
 import com.yeogiya.web.dto.JoinRequestDto;
+import com.yeogiya.web.dto.LoginRequestDto;
 import com.yeogiya.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,5 +18,11 @@ public class MemberController {
     public Long join(@RequestBody JoinRequestDto requestDto) {
 
         return memberService.join(requestDto);
+    }
+
+    @PostMapping("/api/login")
+    public String login(@RequestBody LoginRequestDto requestDto) {
+
+        return memberService.login(requestDto);
     }
 }

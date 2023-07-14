@@ -42,6 +42,10 @@ public class JoinRequestDto {
         this.introduce = introduce;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Member toEntity() {
         return Member.builder()
                 .id(id)
