@@ -65,7 +65,7 @@ project(':yeogiya-web') {
 
 		implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
-		implementation 'com.auth0:java-jwt:4.2.0'
+		implementation 'com.auth0:java-jwt:4.2.1'
 
 		developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -96,6 +96,9 @@ project(':yeogiya-common') {
 		implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 		implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 		implementation 'org.springframework.boot:spring-boot-starter-web'
+
+		implementation 'com.auth0:java-jwt:4.2.1'
+
 
 		compileOnly 'org.projectlombok:lombok'
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'

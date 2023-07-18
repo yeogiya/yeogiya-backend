@@ -1,48 +1,26 @@
 package com.yeogiya.web.controller;
 
-import com.yeogiya.web.dto.JoinRequestDto;
-import com.yeogiya.web.dto.LoginRequestDto;
-import com.yeogiya.web.jwt.PrincipalDetails;
+import com.yeogiya.web.dto.MemberSignUpDto;
 import com.yeogiya.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class MemberController {
-
     private final MemberService memberService;
 
-    @GetMapping("/api/info")
-    public String info(@AuthenticationPrincipal PrincipalDetails principalDetails, Authentication authentication) {
-        System.out.println("PrincipalDetails " + principalDetails);
-        System.out.println("authentication " + authentication);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("PrincipalDetails ");
-        sb.append(principalDetails);
-        sb.append("\n\n");
-        sb.append("authentication ");
-        sb.append(authentication);
-
-        return sb.toString();
-
+    @PostMapping("/sign-up")
+    public String signUp(@RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
+        memberService.signUp(memberSignUpDto);
+        return "회원가입 성공";
     }
 
-    @PostMapping("/api/join")
-    public Long join(@RequestBody JoinRequestDto requestDto) {
-
-        return memberService.join(requestDto);
-    }
-
-    @PostMapping("/api/login")
-    public String login(@RequestBody LoginRequestDto requestDto) {
-
-        return memberService.login(requestDto);
+    @GetMapping("/jwt-test")
+    public String jwtTest() {
+        return "jwtTest 요청 성공";
     }
 }
