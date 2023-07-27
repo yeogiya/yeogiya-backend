@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/sign-up")
+    @PostMapping("/api/sign-up")
     public String signUp(@RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
         memberService.signUp(memberSignUpDto);
         return "회원가입 성공";
