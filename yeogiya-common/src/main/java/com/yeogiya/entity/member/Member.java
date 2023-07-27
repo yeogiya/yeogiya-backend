@@ -37,14 +37,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "password", columnDefinition = "VARCHAR(255)")
     private String password;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(50)")
-    private String name;
-
     @Column(name = "nickname", columnDefinition = "VARCHAR(50)")
     private String nickname;
-
-    @Column(name = "mobile_no", columnDefinition = "VARCHAR(11)")
-    private String mobileNo;
 
     @Column(name = "profile_img", columnDefinition = "VARCHAR(255)")
     private String profileImg;
