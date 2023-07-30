@@ -36,7 +36,9 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/api/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String[] NO_CHECK_URLS = {
+            "/api/login",
+    };
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
@@ -45,9 +47,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
-            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
+        if (!isFilterRequired(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
         // 사용자 요청 헤더에서 RefreshToken 추출
@@ -72,6 +74,20 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         if (refreshToken == null) {
             checkAccessTokenAndAuthentication(request, response, filterChain);
         }
+    }
+
+    private boolean isFilterRequired(String requestURI) {
+        for (String url : NO_CHECK_URLS) {
+            if (requestURI.contains(url)) {
+                return false;
+            }
+
+            if (requestURI.contains("/swagger") || requestURI.contains("/api-docs")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
