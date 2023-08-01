@@ -12,9 +12,17 @@ public abstract class ClientException extends BaseException {
         super(enumErrorCode, ex);
     }
 
+    public ClientException(int result, String message) {
+        super(result, message);
+    }
+
     public static class BadRequest extends ClientException {
         public BadRequest(EnumErrorCode enumErrorCode) {
             super(enumErrorCode);
+        }
+
+        public BadRequest(int result, String message) {
+            super(result, message);
         }
 
         @Override

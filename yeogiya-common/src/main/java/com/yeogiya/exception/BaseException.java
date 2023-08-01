@@ -23,5 +23,10 @@ public abstract class BaseException extends RuntimeException {
         this.initCause(ex);
     }
 
+    public BaseException(int result, String message) {
+        this.result = result;
+        this.message = message;
+    }
+
     public abstract HttpStatus getHttpStatus();
 }
