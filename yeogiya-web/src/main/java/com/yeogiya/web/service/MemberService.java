@@ -3,6 +3,9 @@ package com.yeogiya.web.service;
 import com.yeogiya.entity.member.LoginType;
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.entity.member.Role;
+import com.yeogiya.enumerable.EnumErrorCode;
+import com.yeogiya.exception.ClientException;
+import com.yeogiya.exception.ServerException;
 import com.yeogiya.repository.MemberRepository;
 import com.yeogiya.web.dto.MemberSignUpDto;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +24,13 @@ public class MemberService {
     public void signUp(MemberSignUpDto memberSignUpDto) throws Exception {
 
         if (memberRepository.findById(memberSignUpDto.getEmail()).isPresent()) {
-            throw new Exception("이미 존재하는 아이디입니다.");
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_ID);
         }
         if (memberRepository.findByEmail(memberSignUpDto.getEmail()).isPresent()) {
-            throw new Exception("이미 존재하는 이메일입니다.");
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_EMAIL);
         }
         if (memberRepository.findByNickname(memberSignUpDto.getNickname()).isPresent()) {
-            throw new Exception("이미 존재하는 닉네임입니다.");
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
         }
 
         Member member = Member.builder()
