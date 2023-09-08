@@ -81,10 +81,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             if (requestURI.contains(url)) {
                 return false;
             }
-
-            if (requestURI.contains("/swagger") || requestURI.contains("/api-docs")) {
-                return false;
-            }
         }
 
         return true;
