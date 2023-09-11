@@ -49,21 +49,17 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public boolean checkIdDuplication(String id) {
-        boolean idDupliacte = memberRepository.existsById(id);
-        return idDupliacte;
+        return memberRepository.existsById(id);
     }
 
     @Transactional(readOnly = true)
     public boolean checkNicknameDuplication(String nickname) {
-        boolean nicknameDuplicate = memberRepository.existsByNickname(nickname);
-        return nicknameDuplicate;
-
+        return memberRepository.existsByNickname(nickname);
     }
 
     @Transactional(readOnly = true)
     public boolean checkEmailDuplication(String email) {
-        boolean emailDuplicate = memberRepository.existsByEmail(email);
-        return emailDuplicate;
+        return memberRepository.existsByEmail(email);
     }
 
 }
