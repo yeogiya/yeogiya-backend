@@ -36,8 +36,6 @@ public class MemberService {
                 .id(memberSignUpDto.getId())
                 .email(memberSignUpDto.getEmail())
                 .loginType(LoginType.EMAIL)
-                .name(memberSignUpDto.getName())
-                .mobileNo(memberSignUpDto.getMobileNo())
                 .password(memberSignUpDto.getPassword())
                 .nickname(memberSignUpDto.getNickname())
                 .role(Role.USER)
