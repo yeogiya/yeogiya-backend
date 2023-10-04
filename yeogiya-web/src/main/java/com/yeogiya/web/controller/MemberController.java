@@ -4,6 +4,7 @@ import com.yeogiya.web.dto.MemberSignUpDTO;
 import com.yeogiya.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,11 @@ public class MemberController {
 
 
     @PostMapping("/sign-up")
-    public String signUp(@Valid @RequestBody MemberSignUpDTO memberSignUpDto) throws Exception {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignUpDTO memberSignUpDto) throws Exception {
 
         memberService.signUp(memberSignUpDto);
         log.info("회원가입 성공");
-        return "redirect:/login";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
