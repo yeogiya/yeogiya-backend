@@ -16,7 +16,7 @@ on:
 env:
   PROJECT_NAME: yeogiya
   BUCKET_NAME: bucket-yeogiya
-  CODE_DEPLOY_APP_NAME: yeogiya-codedeplay
+  CODE_DEPLOY_APPLICATION_NAME: yeogiya-codedeplay
   DEPLOYMENT_GROUP_NAME: 	yeogiya-group
 
 permissions:
