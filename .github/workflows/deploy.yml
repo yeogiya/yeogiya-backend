@@ -35,7 +35,7 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+#      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       run: ./gradlew clean build --exclude-task test
 
   # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
