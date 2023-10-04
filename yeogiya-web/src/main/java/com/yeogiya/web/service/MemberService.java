@@ -5,9 +5,8 @@ import com.yeogiya.entity.member.Member;
 import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
-import com.yeogiya.exception.ServerException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.dto.MemberSignUpDto;
+import com.yeogiya.web.dto.MemberSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signUp(MemberSignUpDto memberSignUpDto) throws Exception {
+    public void signUp(MemberSignUpDTO memberSignUpDto) throws Exception {
 
         if (memberRepository.findById(memberSignUpDto.getEmail()).isPresent()) {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_ID);
