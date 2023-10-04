@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @Getter
-public class MemberSignUpDto {
+public class MemberSignUpDTO {
 
     @NotBlank(message = "아이디는 필수 입력값입니다.")
     @Pattern(regexp = "^[a-z0-9_-]{5,20}$", message = "아이디는 영어 소문자와 숫자 특수문자 _,-만 사용하여 5~20자리여야 합니다.")

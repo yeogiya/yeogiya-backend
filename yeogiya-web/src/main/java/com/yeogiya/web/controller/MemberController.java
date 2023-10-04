@@ -1,6 +1,6 @@
 package com.yeogiya.web.controller;
 
-import com.yeogiya.web.dto.MemberSignUpDto;
+import com.yeogiya.web.dto.MemberSignUpDTO;
 import com.yeogiya.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class MemberController {
 
 
     @PostMapping("/sign-up")
-    public String signUp(@Valid @RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
+    public String signUp(@Valid @RequestBody MemberSignUpDTO memberSignUpDto) throws Exception {
 
         memberService.signUp(memberSignUpDto);
         log.info("회원가입 성공");
