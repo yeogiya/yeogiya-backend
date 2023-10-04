@@ -22,13 +22,13 @@ public class MemberService {
     @Transactional
     public void signUp(MemberSignUpDTO memberSignUpDto) throws Exception {
 
-        if (memberRepository.findById(memberSignUpDto.getEmail()).isPresent()) {
+        if (checkIdDuplication(memberSignUpDto.getId())) {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_ID);
         }
-        if (memberRepository.findByEmail(memberSignUpDto.getEmail()).isPresent()) {
+        if (checkEmailDuplication(memberSignUpDto.getEmail())) {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_EMAIL);
         }
-        if (memberRepository.findByNickname(memberSignUpDto.getNickname()).isPresent()) {
+        if (checkNicknameDuplication(memberSignUpDto.getNickname())) {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
         }
 
