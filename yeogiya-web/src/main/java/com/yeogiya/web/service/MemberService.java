@@ -3,33 +3,33 @@ package com.yeogiya.web.service;
 import com.yeogiya.entity.member.LoginType;
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.entity.member.Role;
+import com.yeogiya.enumerable.EnumErrorCode;
+import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.dto.MemberSignUpDto;
+import com.yeogiya.web.dto.MemberSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void signUp(MemberSignUpDto memberSignUpDto) throws Exception {
+    @Transactional
+    public void signUp(MemberSignUpDTO memberSignUpDto) throws Exception {
 
-        if (memberRepository.findById(memberSignUpDto.getId()).isPresent()) {
-            throw new Exception("이미 존재하는 아이디입니다.");
+        if (checkIdDuplication(memberSignUpDto.getId())) {
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_ID);
         }
-
-        if (memberRepository.findByNickname(memberSignUpDto.getNickname()).isPresent()) {
-            throw new Exception("이미 존재하는 닉네임입니다.");
+        if (checkEmailDuplication(memberSignUpDto.getEmail())) {
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_EMAIL);
         }
-
-        if (memberRepository.findByEmail(memberSignUpDto.getEmail()).isPresent()) {
-            throw new Exception("이미 존재하는 이메일입니다.");
+        if (checkNicknameDuplication(memberSignUpDto.getNickname())) {
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
         }
 
         Member member = Member.builder()
@@ -43,5 +43,22 @@ public class MemberService {
 
         member.passwordEncode(passwordEncoder);
         memberRepository.save(member);
+
     }
+
+    @Transactional(readOnly = true)
+    public boolean checkIdDuplication(String id) {
+        return memberRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkNicknameDuplication(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkEmailDuplication(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
 }
