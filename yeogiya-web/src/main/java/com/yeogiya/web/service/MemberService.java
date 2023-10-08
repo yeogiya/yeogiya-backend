@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -61,4 +63,12 @@ public class MemberService {
         return memberRepository.existsByEmail(email);
     }
 
+
+    public Optional<Member> getByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    public void signUp(Member member) {
+        memberRepository.save(member);
+    }
 }

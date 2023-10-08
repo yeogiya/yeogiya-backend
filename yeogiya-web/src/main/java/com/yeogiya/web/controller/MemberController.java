@@ -15,9 +15,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
-
-
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@Valid @RequestBody MemberSignUpDTO memberSignUpDto) throws Exception {
@@ -26,13 +25,6 @@ public class MemberController {
         log.info("회원가입 성공");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-    @PostMapping("/jwt-test")
-    public String jwtTest() {
-        return "jwtTest 요청 성공";
-    }
-
 
     @GetMapping("/sign-up/id-exist")
     public ResponseEntity<Boolean> checkIdDuplicate(String id){
@@ -48,7 +40,4 @@ public class MemberController {
     public ResponseEntity<Boolean> checkEmailDuplicate(String email){
         return ResponseEntity.ok(memberService.checkEmailDuplication(email));
     }
-
-
-
 }

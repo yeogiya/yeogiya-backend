@@ -38,6 +38,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String[] NO_CHECK_URLS = {
             "/api/login",
+            "/oauth2/authorization/google",
+            "/oauth2/authorization/kakao",
+            "/login"
     };
 
     private final JwtService jwtService;
