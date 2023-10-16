@@ -63,7 +63,7 @@ public class AwsS3Service {
         try{
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e){
-            throw new ClientException.Conflict(EnumErrorCode.INCORRECTLY_FORMATTED_FILE);
+            throw new ClientException.BadRequest(EnumErrorCode.INCORRECTLY_FORMATTED_FILE);
         }
     }
 
