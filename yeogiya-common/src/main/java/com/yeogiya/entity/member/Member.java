@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 public class Member extends BaseTimeEntity {
 
@@ -83,4 +83,7 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = updateRefreshToken;
     }
 
+    public void resetPassword(PasswordEncoder passwordEncoder, String password) {
+        this.password = passwordEncoder.encode(password);
+    }
 }
