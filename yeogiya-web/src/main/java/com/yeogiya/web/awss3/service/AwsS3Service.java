@@ -6,6 +6,9 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.yeogiya.enumerable.EnumErrorCode;
+import com.yeogiya.exception.ClientException;
+import com.yeogiya.exception.ServerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -41,7 +44,7 @@ public class AwsS3Service {
                 amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
             } catch (IOException e){
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+                throw new ServerException.InternalServerError(EnumErrorCode.FAIL_FILE_UPLOAD);
             }
             fileUrlList.add("https://" + CLOUD_FRONT_DOMAIN_NAME + "/" + fileName);
 
@@ -51,7 +54,7 @@ public class AwsS3Service {
     }
 
 
-    public String createFileName(String fileName){
+    private String createFileName(String fileName){
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
 
@@ -60,13 +63,12 @@ public class AwsS3Service {
         try{
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일" + fileName + ") 입니다.");
+            throw new ClientException.Conflict(EnumErrorCode.INCORRECTLY_FORMATTED_FILE);
         }
     }
 
 
     public void deleteFile(String fileName){
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
-        System.out.println(bucket);
     }
 }
