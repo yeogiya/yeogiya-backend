@@ -74,6 +74,9 @@ project(':yeogiya-web') {
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 		implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+		implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	}
 
 	tasks.named('test') {
@@ -109,5 +112,8 @@ project(':yeogiya-common') {
 		compileOnly 'org.projectlombok:lombok'
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+		implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	}
 }
