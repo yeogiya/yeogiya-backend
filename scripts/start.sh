@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ec2-user/app/yeogiya"
-JAR_FILE="$PROJECT_ROOT/yeogiya-0.0.1-SNAPSHOT.jar"
+JAR_FILE="/home/ec2-user/deploy/yeogiya.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
@@ -11,7 +11,7 @@ TIME_NOW=$(date +%c)
 
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
+cp $PROJECT_ROOT/build/libs/*.jar /home/ec2-user/deploy
 
 source /home/ec2-user/deploy/env/yeogiya.env
 echo $JASYPT_PASSWORD
