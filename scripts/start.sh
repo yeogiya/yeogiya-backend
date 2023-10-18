@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ec2-user/app/yeogiya"
-JAR_FILE="$PROJECT_ROOT/yeogiya-web/build/libs/yeogiya-0.0.1-SNAPSHOT.jar"
+JAR_FILE="$PROJECT_ROOT/yeogiya-web/build/libs/yeogiya-web-0.0.1-SNAPSHOT.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
