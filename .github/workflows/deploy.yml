@@ -42,7 +42,7 @@ jobs:
       run: mkdir -p deploy
 
     - name: Copy Jar
-      run: cp ./yeogiya/build/libs/yeogiya-0.0.1-SNAPSHOT.jar ./deploy
+      run: cp ./app/yeogiya/build/libs/yeogiya-0.0.1-SNAPSHOT.jar ./deploy
 
   # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
