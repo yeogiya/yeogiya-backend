@@ -38,6 +38,12 @@ jobs:
 #      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       run: ./gradlew clean build --exclude-task test
 
+    - name: Make Directory
+      run: mkdir -p deploy
+
+    - name: Copy Jar
+      run: cp ./yeogiya/build/libs/yeogiya-0.0.1-SNAPSHOT.jar ./deploy
+
   # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
