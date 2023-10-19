@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ec2-user/app/yeogiya"
-JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
+JAR_FILE="$PROJECT_ROOT/yeogiya-web/build/libs/yeogiya-web-0.0.1-SNAPSHOT.jar"
 
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
