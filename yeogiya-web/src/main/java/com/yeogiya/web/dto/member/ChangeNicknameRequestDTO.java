@@ -9,10 +9,11 @@ import javax.validation.constraints.NotEmpty;
 
 @Schema(name = "닉네임 변경 요청 객체")
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ChangeNicknameRequestDTO {
 
     @Schema(description = "변경할 닉네임")
     @NotEmpty
-    private final String nickname;
+    private String nickname;
 }

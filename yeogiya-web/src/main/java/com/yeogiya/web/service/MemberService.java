@@ -113,7 +113,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangeNicknameResponseDTO changeNickname(Long memberId, ChangeNicknameRequestDTO requestDTO) {
+    public ChangeNicknameResponseDTO changeNickname(String memberId, ChangeNicknameRequestDTO requestDTO) {
         Member member = getMember(memberId);
         member.changeNickname(requestDTO.getNickname());
 
@@ -123,7 +123,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangeProfileImgResponseDTO changeProfileImg(Long memberId, MultipartFile profileImg) {
+    public ChangeProfileImgResponseDTO changeProfileImg(String memberId, MultipartFile profileImg) {
         Member member = getMember(memberId);
         String imageUrl = awsS3Service.uploadFile(List.of(profileImg), "member").get(0);
 
@@ -134,7 +134,7 @@ public class MemberService {
                 .build();
     }
 
-    private Member getMember(Long memberId) {
+    private Member getMember(String memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
     }

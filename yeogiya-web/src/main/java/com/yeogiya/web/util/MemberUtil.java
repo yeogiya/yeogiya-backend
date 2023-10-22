@@ -8,11 +8,11 @@ import java.security.Principal;
 
 public class MemberUtil {
 
-    public static Long getMemberId(Principal principal) {
+    public static String getMemberId(Principal principal) {
         if (ObjectUtils.isEmpty(principal)) {
             throw new ClientException.Unauthorized(EnumErrorCode.INVALID_MEMBER_STATUS);
         }
 
-        return Long.parseLong(principal.getName());
+        return principal.getName();
     }
 }
