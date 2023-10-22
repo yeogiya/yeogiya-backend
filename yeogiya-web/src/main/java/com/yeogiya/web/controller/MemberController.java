@@ -2,18 +2,18 @@ package com.yeogiya.web.controller;
 
 import com.yeogiya.dto.response.CommonResponse;
 import com.yeogiya.web.dto.MemberSignUpDTO;
-import com.yeogiya.web.dto.member.CheckDuplicationResponseDTO;
-import com.yeogiya.web.dto.member.FindIdResponseDTO;
-import com.yeogiya.web.dto.member.ResetPasswordRequestDTO;
-import com.yeogiya.web.dto.member.SendPasswordResetEmailRequestDTO;
+import com.yeogiya.web.dto.member.*;
 import com.yeogiya.web.service.MemberService;
 import com.yeogiya.web.swagger.MemberSwagger;
+import com.yeogiya.web.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 @Slf4j
@@ -76,5 +76,23 @@ public class MemberController implements MemberSwagger {
         memberService.resetPassword(requestDTO);
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/auth/v1.0.0/members/change-nickname")
+    public CommonResponse<ChangeNicknameResponseDTO> changeNickname(Principal principal,
+                                                                    @RequestBody @Valid ChangeNicknameRequestDTO requestDTO) {
+
+        ChangeNicknameResponseDTO responseDTO = memberService.changeNickname(MemberUtil.getMemberId(principal), requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK, responseDTO);
+    }
+
+    @PatchMapping(value = "/auth/v1.0.0/members/change-profile-img", consumes = "multipart/form-data")
+    public CommonResponse<ChangeProfileImgResponseDTO> changeProfileImg(Principal principal,
+                                                                        @RequestPart MultipartFile profileImg) {
+
+        ChangeProfileImgResponseDTO responseDTO = memberService.changeProfileImg(MemberUtil.getMemberId(principal), profileImg);
+
+        return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }
 }
