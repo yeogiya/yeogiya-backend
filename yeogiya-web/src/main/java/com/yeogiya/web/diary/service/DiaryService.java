@@ -6,11 +6,15 @@ import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.*;
 import com.yeogiya.web.auth.PrincipalDetails;
+import com.yeogiya.web.diary.dto.request.CalendarPageRequestDTO;
 import com.yeogiya.web.diary.dto.request.DiaryModifyRequestDTO;
 import com.yeogiya.web.diary.dto.request.DiarySaveRequestDTO;
+import com.yeogiya.web.diary.dto.response.CalendarPageResponseDTO;
+import com.yeogiya.web.diary.dto.response.DiariesResponseDTO;
 import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
 import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
+import com.yeogiya.web.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -35,11 +40,14 @@ public class DiaryService {
 
     private final DiaryImageService diaryImageService;
 
+    private final DateUtils dateUtils;
+
+
     @Transactional
     public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
                                         PlaceRequestDTO placeRequestDTO,
                                         PrincipalDetails principal,
-                                        List<MultipartFile> multipartFiles) throws IOException, ParseException {
+                                        List<MultipartFile> multipartFiles) throws IOException {
 
         Diary diary = new Diary(diarySaveRequestDTO.getContent(), diarySaveRequestDTO.getOpenYn());
 
@@ -157,7 +165,7 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryIdResponseDTO deleteDiary(Long diaryId, PrincipalDetails principal) throws ParseException {
+    public DiaryIdResponseDTO deleteDiary(Long diaryId, PrincipalDetails principal) {
 
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(
                 () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
@@ -171,19 +179,34 @@ public class DiaryService {
                 .build();
     }
 
-    public DiaryResponseDTO getDiary(Long diaryId) throws Exception {
+    public DiaryResponseDTO getDiary(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() ->  new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY));
-        List<String> diaryImagePaths = new ArrayList<>();
-
-        List<DiaryImage> diaryImages = diary.getDiaryImages();
-
-        for (DiaryImage diaryImage : diaryImages) {
-            diaryImagePaths.add(diaryImage.getPath());
-        }
-
-        DiaryResponseDTO diaryResponseDTO = new DiaryResponseDTO(diary, diaryImagePaths);
+        DiaryResponseDTO diaryResponseDTO = new DiaryResponseDTO(diary);
 
         return diaryResponseDTO;
+    }
+
+    @Transactional
+    public CalendarPageResponseDTO getDiaries(CalendarPageRequestDTO calendarPageRequestDTO, PrincipalDetails principal) {
+
+        List<Diary> diaries = new ArrayList<>();
+
+        // if(calendarPageRequestDTO.getDay()==0){  월별, 주간별 기능 추가되면 복구
+            Calendar cal = Calendar.getInstance();
+            cal.set(calendarPageRequestDTO.getYear(), calendarPageRequestDTO.getMonth(),calendarPageRequestDTO.getDay());
+            calendarPageRequestDTO.setDay(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            diaries = diaryRepository.findAllByCreatedAtBetweenAndMemberOrderByCreatedAtAsc(
+                    dateUtils.startDateTime(dateUtils.startDate(calendarPageRequestDTO))
+                    ,dateUtils.endDateTime(dateUtils.getDate(calendarPageRequestDTO)),principal.getMember());
+        // }
+
+        CalendarPageResponseDTO calendarPageResponseDTO = new CalendarPageResponseDTO();
+        for(Diary diary : diaries) {
+            calendarPageResponseDTO.getDiaries().add(new DiariesResponseDTO(diary));
+        }
+        calendarPageResponseDTO.setTotalCnt(diaries.size());
+
+        return calendarPageResponseDTO;
     }
 
 }

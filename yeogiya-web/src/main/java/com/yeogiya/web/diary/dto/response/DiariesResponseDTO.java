@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiaryResponseDTO {
+public class DiariesResponseDTO {
 
     private Long diaryId;
     private Long memberId;
@@ -25,7 +25,7 @@ public class DiaryResponseDTO {
     private List<String> diaryImages;
     private List<String> hashtags;
 
-    public DiaryResponseDTO(Diary diary){
+    public DiariesResponseDTO(Diary diary){
         this.diaryId = diary.getId();
         this.content=diary.getContent();
         this.openYn=diary.getOpenYn().toString();
