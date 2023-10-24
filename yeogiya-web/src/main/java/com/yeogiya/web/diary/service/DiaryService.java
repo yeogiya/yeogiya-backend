@@ -1,0 +1,189 @@
+package com.yeogiya.web.diary.service;
+
+import com.yeogiya.entity.diary.*;
+import com.yeogiya.entity.member.Member;
+import com.yeogiya.enumerable.EnumErrorCode;
+import com.yeogiya.exception.ClientException;
+import com.yeogiya.repository.*;
+import com.yeogiya.web.auth.PrincipalDetails;
+import com.yeogiya.web.diary.dto.request.DiaryModifyRequestDTO;
+import com.yeogiya.web.diary.dto.request.DiarySaveRequestDTO;
+import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
+import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
+import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class DiaryService {
+
+    private final DiaryRepository diaryRepository;
+    private final HashtagRepository hashtagRepository;
+    private final DiaryHashtagRepository diaryHashtagRepository;
+    private final MemberRepository memberRepository;
+    private final DiaryPlaceRepository diaryPlaceRepository;
+    private final PlaceRepository placeRepository;
+    private final DiaryImageRepository diaryImageRepository;
+
+    private final DiaryImageService diaryImageService;
+
+    @Transactional
+    public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
+                                        PlaceRequestDTO placeRequestDTO,
+                                        PrincipalDetails principal,
+                                        List<MultipartFile> multipartFiles) throws IOException, ParseException {
+
+        Diary diary = new Diary(diarySaveRequestDTO.getContent(), diarySaveRequestDTO.getOpenYn());
+
+        List<DiaryHashtag> diaryHashtags = new ArrayList<>();
+        List<String> tagStrings = diarySaveRequestDTO.getHashtags();
+
+        Member member = memberRepository.findById(principal.getUsername()).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+        diary.setMember(member);
+        if(tagStrings.size() != 0) {
+            tagStrings.stream()
+                    .map(hashtag ->
+                            hashtagRepository.findByName(hashtag)
+                                    .orElseGet(() -> hashtagRepository.save(
+                                            Hashtag.builder()
+                                                    .name(hashtag)
+                                                    .build())))
+                    .forEach(hashtag -> {
+                            DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
+                            diaryHashtags.add(diaryHashtag);
+                            diaryHashtagRepository.save(diaryHashtag);
+                    });
+        }
+
+        // 이미지 저장 로직
+        List<DiaryImage> diaryImages = new ArrayList<>();
+        if (multipartFiles != null){
+            for (MultipartFile m : multipartFiles) {
+                DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
+                diaryImages.add(imageFileUpload);
+            }
+        }
+
+        // 장소 저장 로직
+        String kakaoId = placeRequestDTO.getKakaoId();
+        placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
+                Place.builder()
+                .name(placeRequestDTO.getName())
+                .address(placeRequestDTO.getAddress())
+                .kakaoId(placeRequestDTO.getKakaoId())
+                .build()));
+
+        Place place = placeRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+        DiaryPlace diaryPlace = new DiaryPlace(diary, place);
+        diaryPlaceRepository.save(diaryPlace);
+
+
+
+        diaryRepository.save(diary);
+
+
+        return DiaryIdResponseDTO.builder()
+                .id(diary.getId())
+                .build();
+    }
+
+    @Transactional
+    public DiaryIdResponseDTO modifyDiary(Long diaryId,
+                                          DiaryModifyRequestDTO diaryModifyRequestDTO,
+                                          PlaceRequestDTO placeRequestDTO,
+                                          PrincipalDetails principal,
+                                          List<MultipartFile> multipartFiles) throws IOException {
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(
+                () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
+        );
+
+        if (principal.getMember().getMemberId() == diary.getMember().getMemberId()) {
+            // 태그
+            diaryHashtagRepository.deleteByDiaryId(diaryId);
+            List<String> tagStrings = diaryModifyRequestDTO.getHashtags();
+            if (tagStrings.size() != 0) {
+                tagStrings.stream()
+                        .map(hashtag ->
+                                hashtagRepository.findByName(hashtag)
+                                        .orElseGet(() -> hashtagRepository.save(
+                                                Hashtag.builder()
+                                                        .name(hashtag)
+                                                        .build())))
+                        .forEach(hashtag -> {
+                            DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
+                            diaryHashtagRepository.save(diaryHashtag);
+                        });
+            }
+
+
+            // 이미지
+            diaryImageRepository.deleteByDiaryId(diaryId);
+            for (MultipartFile m : multipartFiles) {
+                DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
+            }
+
+            // 장소
+            String kakaoId = placeRequestDTO.getKakaoId();
+            placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
+                    Place.builder()
+                            .name(placeRequestDTO.getName())
+                            .address(placeRequestDTO.getAddress())
+                            .kakaoId(placeRequestDTO.getKakaoId())
+                            .build()));
+
+            Place place = placeRepository.findByKakaoId(kakaoId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+            DiaryPlace diaryPlace = diaryPlaceRepository.findByDiaryId(diaryId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+            diaryPlace.update(place);
+
+
+            diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn());
+        } else {
+            throw new ClientException.Forbidden(EnumErrorCode.ONLY_MODIFY_WRITER);
+        }
+
+        return DiaryIdResponseDTO.builder()
+                .id(diaryId)
+                .build();
+
+    }
+
+    @Transactional
+    public DiaryIdResponseDTO deleteDiary(Long diaryId, PrincipalDetails principal) throws ParseException {
+
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(
+                () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
+        );
+        if (principal.getMember().getMemberId() == diary.getMember().getMemberId()) {
+            diaryRepository.delete(diary);
+        } else
+            throw new ClientException.Forbidden(EnumErrorCode.ONLY_DELETE_WRITER);
+        return DiaryIdResponseDTO.builder()
+                .id(diaryId)
+                .build();
+    }
+
+    public DiaryResponseDTO getDiary(Long diaryId) throws Exception {
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(() ->  new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY));
+        List<String> diaryImagePaths = new ArrayList<>();
+
+        List<DiaryImage> diaryImages = diary.getDiaryImages();
+
+        for (DiaryImage diaryImage : diaryImages) {
+            diaryImagePaths.add(diaryImage.getPath());
+        }
+
+        DiaryResponseDTO diaryResponseDTO = new DiaryResponseDTO(diary, diaryImagePaths);
+
+        return diaryResponseDTO;
+    }
+
+}

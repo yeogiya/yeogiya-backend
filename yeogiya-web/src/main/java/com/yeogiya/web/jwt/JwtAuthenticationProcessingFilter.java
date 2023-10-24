@@ -3,6 +3,7 @@ package com.yeogiya.web.jwt;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.repository.MemberRepository;
+import com.yeogiya.web.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -158,11 +159,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             password = PasswordUtil.generateRandomPassword();
         }
 
-        UserDetails userDetailsMember = org.springframework.security.core.userdetails.User.builder()
-                .username(myMember.getId())
-                .password(password)
-                .roles(myMember.getRole().name())
-                .build();
+        UserDetails userDetailsMember = new PrincipalDetails(myMember);
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsMember, null,
@@ -170,4 +167,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+
+
 }

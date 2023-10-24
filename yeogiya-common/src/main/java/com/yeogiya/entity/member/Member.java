@@ -1,6 +1,7 @@
 package com.yeogiya.entity.member;
 
 import com.yeogiya.entity.BaseTimeEntity;
+import com.yeogiya.entity.diary.Diary;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -73,6 +76,9 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "refresh_token", columnDefinition = "VARCHAR(255)")
     private String refreshToken;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    private List<Diary> diarys = new ArrayList<>();
 
     // 비밀번호 암호화 메소드
     public void passwordEncode(PasswordEncoder passwordEncoder) {
