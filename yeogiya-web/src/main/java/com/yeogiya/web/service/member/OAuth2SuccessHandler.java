@@ -58,6 +58,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+
+        memberService.updateRefreshToken(member.getId(), refreshToken);
     }
 
     private String generateRandomNickname() {
