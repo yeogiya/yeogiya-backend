@@ -3,6 +3,7 @@ package com.yeogiya.web.jwt;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.repository.MemberRepository;
+import com.yeogiya.web.service.MemberService;
 import com.yeogiya.web.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -113,8 +115,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     private String reIssueRefreshToken(Member member) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
-        member.updateRefreshToken(reIssuedRefreshToken);
-        memberRepository.saveAndFlush(member);
+        memberService.updateRefreshToken(member.getId(), reIssuedRefreshToken);
+
         return reIssuedRefreshToken;
     }
 
@@ -167,7 +169,4 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
-
-
 }

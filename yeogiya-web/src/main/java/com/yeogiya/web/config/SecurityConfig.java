@@ -8,6 +8,7 @@ import com.yeogiya.web.handler.LoginSuccessHandler;
 import com.yeogiya.web.jwt.JwtAuthenticationProcessingFilter;
 import com.yeogiya.web.jwt.JwtService;
 import com.yeogiya.web.service.LoginService;
+import com.yeogiya.web.service.MemberService;
 import com.yeogiya.web.service.member.CustomOAuth2UserService;
 import com.yeogiya.web.service.member.OAuth2FailureHandler;
 import com.yeogiya.web.service.member.OAuth2SuccessHandler;
@@ -46,6 +47,7 @@ public class SecurityConfig {
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final PasswordEncoder passwordEncoder;
+    private final MemberService memberService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -114,7 +116,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, memberRepository);
+        return new LoginSuccessHandler(jwtService, memberService);
     }
 
     /**
@@ -143,7 +145,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, memberRepository);
+        return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, memberService);
     }
 
     @Bean

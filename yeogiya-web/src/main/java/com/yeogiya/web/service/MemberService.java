@@ -138,4 +138,12 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
     }
+
+    @Transactional
+    public void updateRefreshToken(String id, String refreshToken) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+
+        member.updateRefreshToken(refreshToken);
+    }
 }
