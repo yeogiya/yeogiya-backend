@@ -39,7 +39,7 @@ import java.io.IOException;
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String[] NO_CHECK_URLS = {
-            "/api/login",
+            "/api/public/v1.0.0/members/login",
             "/oauth2/authorization/google",
             "/oauth2/authorization/kakao",
             "/login"
