@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -141,9 +140,14 @@ public class MemberService {
 
     @Transactional
     public void updateRefreshToken(String id, String refreshToken) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+        Member member = getMember(id);
 
         member.updateRefreshToken(refreshToken);
+    }
+
+    @Transactional
+    public void logout(String id) {
+        Member member = getMember(id);
+        member.logout();
     }
 }

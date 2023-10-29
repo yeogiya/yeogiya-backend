@@ -95,9 +95,4 @@ public class MemberController implements MemberSwagger {
 
         return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }
-
-    @PostMapping("/auth/v1.0.0/members/logout")
-    public CommonResponse<Void> logout() {
-        return new CommonResponse<>(HttpStatus.NO_CONTENT);
-    }
 }

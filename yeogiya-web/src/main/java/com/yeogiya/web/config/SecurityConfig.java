@@ -3,6 +3,7 @@ package com.yeogiya.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeogiya.repository.MemberRepository;
 import com.yeogiya.web.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.yeogiya.web.handler.CustomLogoutHandler;
 import com.yeogiya.web.handler.LoginFailureHandler;
 import com.yeogiya.web.handler.LoginSuccessHandler;
 import com.yeogiya.web.jwt.JwtAuthenticationProcessingFilter;
@@ -48,6 +49,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
+    private final CustomLogoutHandler customLogoutHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -80,6 +82,12 @@ public class SecurityConfig {
                 .antMatchers("/health-check").permitAll()
                 .antMatchers("/api/public/**").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+
+                .and()
+                .logout()
+                .addLogoutHandler(customLogoutHandler)
+                .logoutUrl("/api/auth/v1.0.0/members/logout")
+
                 .and()
 //                //== 소셜 로그인 설정 ==//
                 .oauth2Login()

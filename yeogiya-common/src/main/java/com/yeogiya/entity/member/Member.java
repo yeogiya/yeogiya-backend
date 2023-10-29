@@ -100,4 +100,8 @@ public class Member extends BaseTimeEntity {
     public void changeProfileImg(String profileImg) {
         this.profileImg = profileImg;
     }
+
+    public void logout() {
+        this.refreshToken = null;
+    }
 }
