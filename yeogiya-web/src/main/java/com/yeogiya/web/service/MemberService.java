@@ -150,4 +150,10 @@ public class MemberService {
         Member member = getMember(id);
         member.logout();
     }
+
+    @Transactional
+    public void withdraw(String id) {
+        Member member = getMember(id);
+        member.withdraw();
+    }
 }

@@ -95,4 +95,11 @@ public class MemberController implements MemberSwagger {
 
         return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }
+
+    @PostMapping("/auth/v1.0.0/members/withdraw")
+    public CommonResponse<Void> withdraw(Principal principal) {
+        memberService.withdraw(MemberUtil.getMemberId(principal));
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
 }

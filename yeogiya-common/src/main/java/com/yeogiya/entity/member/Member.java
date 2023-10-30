@@ -104,4 +104,9 @@ public class Member extends BaseTimeEntity {
     public void logout() {
         this.refreshToken = null;
     }
+
+    public void withdraw() {
+        this.status = Status.N;
+        this.withdrawalAt = LocalDateTime.now();
+    }
 }
