@@ -38,11 +38,8 @@ public class DiaryController implements DiarySwagger {
                                                         @RequestPart(value = "diaryImage", required = false)
                                                             List<MultipartFile> multipartFiles,
                                                         @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
-        if (principal != null) {
-            return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
-        } else
-            throw new ClientException.Unauthorized(EnumErrorCode.AVAILABLE_AFTER_LOGGING_IN);
 
+        return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
     }
 
     @PatchMapping("/auth/v1.0.0/diaries/{diaryId}")
@@ -53,36 +50,24 @@ public class DiaryController implements DiarySwagger {
                                                                        List<MultipartFile> multipartFiles,
                                                            @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
 
-        if (principal != null) {
-            return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, principal, multipartFiles));
-        } else
-            throw new ClientException.Unauthorized(EnumErrorCode.AVAILABLE_AFTER_LOGGING_IN);
+        return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, principal, multipartFiles));
 
     }
 
     @DeleteMapping("/auth/v1.0.0/diaries/{diaryId}")
     public CommonResponse<DiaryIdResponseDTO> deleteDiary (@PathVariable Long diaryId, @AuthenticationPrincipal PrincipalDetails principal) {
-        if (principal != null)
-            return new CommonResponse<>(HttpStatus.OK, diaryService.deleteDiary(diaryId, principal));
-        else
-            throw new ClientException.Unauthorized(EnumErrorCode.AVAILABLE_AFTER_LOGGING_IN);
+        return new CommonResponse<>(HttpStatus.OK, diaryService.deleteDiary(diaryId, principal));
     }
 
     @GetMapping("/auth/v1.0.0/diaries/{diaryId}")
     public CommonResponse<DiaryResponseDTO> getDiary(@PathVariable Long diaryId, @AuthenticationPrincipal PrincipalDetails principal) {
-        if (principal != null)
-            return new CommonResponse<>(HttpStatus.OK, diaryService.getDiary(diaryId));
-        else
-            throw new ClientException.Unauthorized(EnumErrorCode.AVAILABLE_AFTER_LOGGING_IN);
+        return new CommonResponse<>(HttpStatus.OK, diaryService.getDiary(diaryId));
     }
 
     @GetMapping("/auth/v1.0.0/diaries")
     public CommonResponse<CalendarPageResponseDTO> getDiaries(CalendarPageRequestDTO calendarPageRequestDTO,
                                                               @AuthenticationPrincipal PrincipalDetails principal) {
-        if (principal != null)
-            return new CommonResponse<>(HttpStatus.OK, diaryService.getDiaries(calendarPageRequestDTO, principal));
-        else
-            throw new ClientException.Unauthorized(EnumErrorCode.AVAILABLE_AFTER_LOGGING_IN);
+         return new CommonResponse<>(HttpStatus.OK, diaryService.getDiaries(calendarPageRequestDTO, principal));
     }
 
 
