@@ -40,9 +40,6 @@ public class DiaryService {
 
     private final DiaryImageService diaryImageService;
 
-    private final DateUtils dateUtils;
-
-
     @Transactional
     public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
                                         PlaceRequestDTO placeRequestDTO,
@@ -196,8 +193,8 @@ public class DiaryService {
             cal.set(calendarPageRequestDTO.getYear(), calendarPageRequestDTO.getMonth(),calendarPageRequestDTO.getDay());
             calendarPageRequestDTO.setDay(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
             diaries = diaryRepository.findAllByCreatedAtBetweenAndMemberOrderByCreatedAtAsc(
-                    dateUtils.startDateTime(dateUtils.startDate(calendarPageRequestDTO))
-                    ,dateUtils.endDateTime(dateUtils.getDate(calendarPageRequestDTO)),principal.getMember());
+                    DateUtils.startDateTime(DateUtils.startDate(calendarPageRequestDTO))
+                    ,DateUtils.endDateTime(DateUtils.getDate(calendarPageRequestDTO)),principal.getMember());
         // }
 
         CalendarPageResponseDTO calendarPageResponseDTO = new CalendarPageResponseDTO();
