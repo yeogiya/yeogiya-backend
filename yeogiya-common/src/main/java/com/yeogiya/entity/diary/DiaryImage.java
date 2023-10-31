@@ -17,8 +17,8 @@ public class DiaryImage {
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
-    @Column(name = "org_name")
-    private String orgName;
+    @Column(name = "original_name")
+    private String originalName;
 
     @Column(name = "saved_name")
     private String savedName;
