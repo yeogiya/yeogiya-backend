@@ -20,6 +20,11 @@ public enum EnumErrorCode {
 
     FAIL_FILE_UPLOAD(200001, "파일 업로드에 실패했습니다."),
     INCORRECTLY_FORMATTED_FILE(200002, "잘못된 형식의 파일입니다."),
+    AVAILABLE_AFTER_LOGGING_IN(200003, "로그인 후 이용 가능합니다."),
+    NOT_FOUND_PLACE(200004, "장소가 없습니다."),
+    NOT_FOUND_DIARY(200005, "해당 공간일기가 존재하지 않습니다."),
+    INVALID_ACCESS(200006, "잘못된 접근입니다.")
+
 
     ;
 
