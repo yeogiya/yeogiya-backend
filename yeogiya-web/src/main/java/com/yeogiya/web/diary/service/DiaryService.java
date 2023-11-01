@@ -110,49 +110,47 @@ public class DiaryService {
                 () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
         );
 
-        if (principal.getMember().getMemberId() == diary.getMember().getMemberId()) {
-            // 태그
-            diaryHashtagRepository.deleteByDiaryId(diaryId);
-            List<String> tagStrings = diaryModifyRequestDTO.getHashtags();
-            if (tagStrings.size() != 0) {
-                tagStrings.stream()
-                        .map(hashtag ->
-                                hashtagRepository.findByName(hashtag)
-                                        .orElseGet(() -> hashtagRepository.save(
-                                                Hashtag.builder()
-                                                        .name(hashtag)
-                                                        .build())))
-                        .forEach(hashtag -> {
-                            DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
-                            diaryHashtagRepository.save(diaryHashtag);
-                        });
-            }
-
-
-            // 이미지
-            diaryImageRepository.deleteByDiaryId(diaryId);
-            for (MultipartFile m : multipartFiles) {
-                DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
-            }
-
-            // 장소
-            String kakaoId = placeRequestDTO.getKakaoId();
-            placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
-                    Place.builder()
-                            .name(placeRequestDTO.getName())
-                            .address(placeRequestDTO.getAddress())
-                            .kakaoId(placeRequestDTO.getKakaoId())
-                            .build()));
-
-            Place place = placeRepository.findByKakaoId(kakaoId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
-            DiaryPlace diaryPlace = diaryPlaceRepository.findByDiaryId(diaryId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
-            diaryPlace.update(place);
-
-
-            diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn());
-        } else {
-            throw new ClientException.Forbidden(EnumErrorCode.ONLY_MODIFY_WRITER);
+        validateAccess(principal, diary);
+        // 태그
+        diaryHashtagRepository.deleteByDiaryId(diaryId);
+        List<String> tagStrings = diaryModifyRequestDTO.getHashtags();
+        if (tagStrings.size() != 0) {
+            tagStrings.stream()
+                    .map(hashtag ->
+                            hashtagRepository.findByName(hashtag)
+                                    .orElseGet(() -> hashtagRepository.save(
+                                            Hashtag.builder()
+                                                    .name(hashtag)
+                                                    .build())))
+                    .forEach(hashtag -> {
+                        DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
+                        diaryHashtagRepository.save(diaryHashtag);
+                    });
         }
+
+
+        // 이미지
+        diaryImageRepository.deleteByDiaryId(diaryId);
+        for (MultipartFile m : multipartFiles) {
+            DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
+        }
+
+        // 장소
+        String kakaoId = placeRequestDTO.getKakaoId();
+        placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
+                Place.builder()
+                        .name(placeRequestDTO.getName())
+                        .address(placeRequestDTO.getAddress())
+                        .kakaoId(placeRequestDTO.getKakaoId())
+                        .build()));
+
+        Place place = placeRepository.findByKakaoId(kakaoId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+        DiaryPlace diaryPlace = diaryPlaceRepository.findByDiaryId(diaryId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+        diaryPlace.update(place);
+
+
+        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn());
+
 
         return DiaryIdResponseDTO.builder()
                 .id(diaryId)
@@ -166,10 +164,9 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(
                 () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
         );
-        if (principal.getMember().getMemberId() == diary.getMember().getMemberId()) {
-            diaryRepository.delete(diary);
-        } else
-            throw new ClientException.Forbidden(EnumErrorCode.ONLY_DELETE_WRITER);
+        validateAccess(principal, diary);
+        diaryRepository.delete(diary);
+
         return DiaryIdResponseDTO.builder()
                 .id(diaryId)
                 .build();
@@ -203,6 +200,12 @@ public class DiaryService {
         calendarPageResponseDTO.setTotalCnt(diaries.size());
 
         return calendarPageResponseDTO;
+    }
+
+    private void validateAccess(PrincipalDetails principal, Diary diary) {
+        if (principal.getMember().getMemberId() != diary.getMember().getMemberId()) {
+            throw new ClientException.Forbidden(EnumErrorCode.INVALID_ACCESS);
+        }
     }
 
 }

@@ -21,8 +21,7 @@ public enum EnumErrorCode {
     AVAILABLE_AFTER_LOGGING_IN(200003, "로그인 후 이용 가능합니다."),
     NOT_FOUND_PLACE(200004, "장소가 없습니다."),
     NOT_FOUND_DIARY(200005, "해당 공간일기가 존재하지 않습니다."),
-    ONLY_MODIFY_WRITER(200005, "작성자만 수정할 수 있습니다."),
-    ONLY_DELETE_WRITER(200006, "작성자만 삭제할 수 있습니다.")
+    INVALID_ACCESS(200006, "잘못된 접근입니다.")
 
 
     ;
