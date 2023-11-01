@@ -3,6 +3,7 @@ package com.yeogiya.web.diary.dto.response;
 import com.yeogiya.entity.diary.Diary;
 import com.yeogiya.entity.diary.DiaryHashtag;
 import com.yeogiya.entity.diary.DiaryImage;
+import com.yeogiya.entity.diary.Hashtag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -31,20 +33,14 @@ public class DiariesResponseDTO {
         this.openYn=diary.getOpenYn().toString();
         this.memberId = diary.getMember().getMemberId();
 
-        List<String> diaryHashtagStrings = new ArrayList<>();
-        List<DiaryHashtag> diaryHashtags = diary.getDiaryHashtags();
-        for(DiaryHashtag diaryHashtag : diaryHashtags) {
-            String diaryHashtagString = diaryHashtag.getHashtag().getName();
-            diaryHashtagStrings.add(diaryHashtagString);
-        }
-        this.hashtags = diaryHashtagStrings;
+        this.hashtags = diary.getDiaryHashtags().stream()
+                .map(DiaryHashtag::getHashtag)
+                .map(Hashtag::getName)
+                .collect(Collectors.toList());
 
-        List<String> diaryImagePaths = new ArrayList<>();
-        List<DiaryImage> diaryImages = diary.getDiaryImages();
-        for (DiaryImage diaryImage : diaryImages) {
-            diaryImagePaths.add(diaryImage.getPath());
-        }
-        this.diaryImages = diaryImagePaths;
+        this.diaryImages = diary.getDiaryImages().stream()
+                .map(DiaryImage::getPath)
+                .collect(Collectors.toList());
 
         this.placeName = diary.getDiaryPlace().getPlace().getName();
 
