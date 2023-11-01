@@ -46,13 +46,12 @@ public class DiaryService {
                                         PrincipalDetails principal,
                                         List<MultipartFile> multipartFiles) throws IOException {
 
-        Diary diary = new Diary(diarySaveRequestDTO.getContent(), diarySaveRequestDTO.getOpenYn());
+        Member member = memberRepository.findById(principal.getUsername()).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+        Diary diary = diarySaveRequestDTO.toEntity(member);
 
         List<DiaryHashtag> diaryHashtags = new ArrayList<>();
         List<String> tagStrings = diarySaveRequestDTO.getHashtags();
 
-        Member member = memberRepository.findById(principal.getUsername()).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
-        diary.setMember(member);
         if(tagStrings.size() != 0) {
             tagStrings.stream()
                     .map(hashtag ->

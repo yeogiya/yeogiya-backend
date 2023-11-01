@@ -46,11 +46,6 @@ public class Diary extends BaseTimeEntity {
     @OneToOne(mappedBy = "diary", orphanRemoval = true)
     private DiaryPlace diaryPlace;
 
-    public Diary(String content, OpenYn openYn){
-        this.content = content;
-        this.openYn = openYn;
-    }
-
     public void update(String content, OpenYn openYn) {
         this.content = content;
         this.openYn = openYn;
