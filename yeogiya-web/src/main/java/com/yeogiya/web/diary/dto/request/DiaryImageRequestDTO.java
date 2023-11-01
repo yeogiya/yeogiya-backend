@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class DiaryImageRequestDTO {
-    private String orgName;
+    private String originalName;
     private String savedName;
     private String path;
 
 
     public DiaryImage toEntity(Diary diary) {
         return DiaryImage.builder()
-                .orgName(this.orgName)
+                .originalName(this.originalName)
                 .savedName(this.savedName)
                 .path(this.path)
                 .diary(diary)

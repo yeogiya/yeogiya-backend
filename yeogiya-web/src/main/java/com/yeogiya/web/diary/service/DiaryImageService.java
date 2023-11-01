@@ -25,11 +25,11 @@ public class DiaryImageService {
     public DiaryImage upload(MultipartFile multipartFile, Diary diary) throws IOException {
 
 
-        String orgName = multipartFile.getOriginalFilename();
-        String savedName = UUID.randomUUID() + orgName;
+        String originalName = multipartFile.getOriginalFilename();
+        String savedName = UUID.randomUUID() + originalName;
         String path = s3Uploader.upload(multipartFile, savedName);
 
-        DiaryImageRequestDTO diaryImageRequestDto = new DiaryImageRequestDTO(orgName, savedName, path);
+        DiaryImageRequestDTO diaryImageRequestDto = new DiaryImageRequestDTO(originalName, savedName, path);
 
         DiaryImage diaryImage = diaryImageRepository.save(diaryImageRequestDto.toEntity(diary));
 
