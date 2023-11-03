@@ -46,4 +46,7 @@ public interface MemberSwagger {
             @Content(mediaType = "multipart/form-data", schema = @Schema(implementation = MultipartFile.class))
     }))
     CommonResponse<ChangeProfileImgResponseDTO> changeProfileImg(Principal principal, MultipartFile profileImg);
+
+    @Operation(summary = "회원 탈퇴")
+    CommonResponse<Void> withdraw(Principal principal);
 }

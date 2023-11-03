@@ -3,6 +3,7 @@ package com.yeogiya.web.jwt;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.repository.MemberRepository;
+import com.yeogiya.web.service.MemberService;
 import com.yeogiya.web.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ import java.io.IOException;
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String[] NO_CHECK_URLS = {
-            "/api/login",
+            "/api/public/v1.0.0/members/login",
             "/oauth2/authorization/google",
             "/oauth2/authorization/kakao",
             "/login"
@@ -46,6 +47,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -75,9 +77,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
         // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     private boolean isFilterRequired(String requestURI) {
@@ -113,8 +113,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     private String reIssueRefreshToken(Member member) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
-        member.updateRefreshToken(reIssuedRefreshToken);
-        memberRepository.saveAndFlush(member);
+        memberService.updateRefreshToken(member.getId(), reIssuedRefreshToken);
+
         return reIssuedRefreshToken;
     }
 
@@ -167,7 +167,4 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
-
-
 }

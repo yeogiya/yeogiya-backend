@@ -2,7 +2,6 @@ package com.yeogiya.web.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.yeogiya.repository.MemberRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +42,6 @@ public class JwtService {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
-
-    private final MemberRepository memberRepository;
 
     /**
      * AccessToken 생성 메소드
@@ -150,17 +147,6 @@ public class JwtService {
      */
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
         response.setHeader(refreshHeader, refreshToken);
-    }
-
-    /**
-     * RefreshToken DB 저장(업데이트)
-     */
-    public void updateRefreshToken(String id, String refreshToken) {
-        memberRepository.findById(id)
-                .ifPresentOrElse(
-                        member -> member.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
-                );
     }
 
     public boolean isTokenValid(String token) {

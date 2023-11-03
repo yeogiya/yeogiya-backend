@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/login"; // "/login"으로 오는 요청을 처리
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/public/v1.0.0/members/login"; // "/login"으로 오는 요청을 처리
     private static final String HTTP_METHOD = "POST"; // 로그인 HTTP 메소드는 POST
     private static final String CONTENT_TYPE = "application/json"; // JSON 타입의 데이터로 오는 로그인 요청만 처리
     private static final String USERNAME_KEY = "id"; // 회원 로그인 시 이메일 요청 JSON Key : "id"

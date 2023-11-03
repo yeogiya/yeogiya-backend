@@ -3,11 +3,14 @@ package com.yeogiya.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeogiya.repository.MemberRepository;
 import com.yeogiya.web.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.yeogiya.web.handler.CustomLogoutHandler;
+import com.yeogiya.web.handler.CustomLogoutSuccessHandler;
 import com.yeogiya.web.handler.LoginFailureHandler;
 import com.yeogiya.web.handler.LoginSuccessHandler;
 import com.yeogiya.web.jwt.JwtAuthenticationProcessingFilter;
 import com.yeogiya.web.jwt.JwtService;
 import com.yeogiya.web.service.LoginService;
+import com.yeogiya.web.service.MemberService;
 import com.yeogiya.web.service.member.CustomOAuth2UserService;
 import com.yeogiya.web.service.member.OAuth2FailureHandler;
 import com.yeogiya.web.service.member.OAuth2SuccessHandler;
@@ -46,6 +49,9 @@ public class SecurityConfig {
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final PasswordEncoder passwordEncoder;
+    private final MemberService memberService;
+    private final CustomLogoutHandler customLogoutHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -78,6 +84,13 @@ public class SecurityConfig {
                 .antMatchers("/health-check").permitAll()
                 .antMatchers("/api/public/**").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+
+                .and()
+                .logout()
+                .addLogoutHandler(customLogoutHandler)
+                .logoutUrl("/api/auth/v1.0.0/members/logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler)
+
                 .and()
 //                //== 소셜 로그인 설정 ==//
                 .oauth2Login()
@@ -114,7 +127,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, memberRepository);
+        return new LoginSuccessHandler(jwtService, memberService);
     }
 
     /**
@@ -143,7 +156,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, memberRepository);
+        return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, memberService);
     }
 
     @Bean

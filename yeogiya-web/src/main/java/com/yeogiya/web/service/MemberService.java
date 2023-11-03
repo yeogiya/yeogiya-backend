@@ -6,9 +6,9 @@ import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.awss3.service.AwsS3Service;
 import com.yeogiya.web.dto.MemberSignUpDTO;
 import com.yeogiya.web.dto.member.*;
+import com.yeogiya.web.image.ImageUploadService;
 import com.yeogiya.web.service.member.PasswordResetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -27,7 +26,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetService passwordResetService;
-    private final AwsS3Service awsS3Service;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public void signUp(MemberSignUpDTO memberSignUpDto) {
@@ -125,7 +124,7 @@ public class MemberService {
     @Transactional
     public ChangeProfileImgResponseDTO changeProfileImg(String memberId, MultipartFile profileImg) {
         Member member = getMember(memberId);
-        String imageUrl = awsS3Service.uploadFile(List.of(profileImg), "member").get(0);
+        String imageUrl = imageUploadService.upload(profileImg);
 
         member.changeProfileImg(imageUrl);
 
@@ -137,5 +136,24 @@ public class MemberService {
     private Member getMember(String memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    @Transactional
+    public void updateRefreshToken(String id, String refreshToken) {
+        Member member = getMember(id);
+
+        member.updateRefreshToken(refreshToken);
+    }
+
+    @Transactional
+    public void logout(String id) {
+        Member member = getMember(id);
+        member.logout();
+    }
+
+    @Transactional
+    public void withdraw(String id) {
+        Member member = getMember(id);
+        member.withdraw();
     }
 }
