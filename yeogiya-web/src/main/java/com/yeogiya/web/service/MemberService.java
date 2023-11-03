@@ -6,9 +6,9 @@ import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.awss3.service.AwsS3Service;
 import com.yeogiya.web.dto.MemberSignUpDTO;
 import com.yeogiya.web.dto.member.*;
+import com.yeogiya.web.image.ImageUploadService;
 import com.yeogiya.web.service.member.PasswordResetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +26,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetService passwordResetService;
-    private final AwsS3Service awsS3Service;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public void signUp(MemberSignUpDTO memberSignUpDto) {
@@ -124,7 +124,7 @@ public class MemberService {
     @Transactional
     public ChangeProfileImgResponseDTO changeProfileImg(String memberId, MultipartFile profileImg) {
         Member member = getMember(memberId);
-        String imageUrl = awsS3Service.uploadFile(List.of(profileImg), "member").get(0);
+        String imageUrl = imageUploadService.upload(profileImg);
 
         member.changeProfileImg(imageUrl);
 
