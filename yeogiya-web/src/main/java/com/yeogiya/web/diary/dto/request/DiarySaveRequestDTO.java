@@ -16,6 +16,7 @@ public class DiarySaveRequestDTO {
     @NotBlank(message = "내용은 필수 입력 사항입니다.")
     private String content;
     private OpenYn openYn;
+    private Double star;
 
     private List<String> hashtags;
 
@@ -23,6 +24,7 @@ public class DiarySaveRequestDTO {
         return Diary.builder()
                 .content(content)
                 .openYn(openYn)
+                .star(star)
                 .member(member)
                 .build();
     }

@@ -149,7 +149,7 @@ public class DiaryService {
         diaryPlace.update(place);
 
 
-        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn());
+        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar());
 
 
         return DiaryIdResponseDTO.builder()

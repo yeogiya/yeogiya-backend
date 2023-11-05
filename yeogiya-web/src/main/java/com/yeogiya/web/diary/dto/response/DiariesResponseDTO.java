@@ -24,6 +24,7 @@ public class DiariesResponseDTO {
     private String placeName;
     private String content;
     private String openYn;
+    private Double star;
     private List<String> diaryImages;
     private List<String> hashtags;
 
@@ -32,6 +33,7 @@ public class DiariesResponseDTO {
         this.content=diary.getContent();
         this.openYn=diary.getOpenYn().toString();
         this.memberId = diary.getMember().getMemberId();
+        this.star = diary.getStar();
 
         this.hashtags = diary.getDiaryHashtags().stream()
                 .map(DiaryHashtag::getHashtag)
