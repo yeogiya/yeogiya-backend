@@ -13,6 +13,7 @@ import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.diary.service.DiaryService;
 import com.yeogiya.web.swagger.DiarySwagger;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class DiaryController implements DiarySwagger {
                                                         @RequestPart("place") PlaceRequestDTO place,
                                                         @RequestPart(value = "diaryImage", required = false)
                                                             List<MultipartFile> multipartFiles,
-                                                        @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
+                                                        @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
 
         return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
     }
@@ -48,25 +49,25 @@ public class DiaryController implements DiarySwagger {
                                                            @RequestPart("place") PlaceRequestDTO place,
                                                            @RequestPart(value = "diaryImage", required = false)
                                                                        List<MultipartFile> multipartFiles,
-                                                           @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
+                                                           @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
 
         return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, principal, multipartFiles));
 
     }
 
     @DeleteMapping("/auth/v1.0.0/diaries/{diaryId}")
-    public CommonResponse<DiaryIdResponseDTO> deleteDiary (@PathVariable Long diaryId, @AuthenticationPrincipal PrincipalDetails principal) {
+    public CommonResponse<DiaryIdResponseDTO> deleteDiary (@PathVariable Long diaryId, @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) {
         return new CommonResponse<>(HttpStatus.OK, diaryService.deleteDiary(diaryId, principal));
     }
 
     @GetMapping("/auth/v1.0.0/diaries/{diaryId}")
-    public CommonResponse<DiaryResponseDTO> getDiary(@PathVariable Long diaryId, @AuthenticationPrincipal PrincipalDetails principal) {
+    public CommonResponse<DiaryResponseDTO> getDiary(@PathVariable Long diaryId, @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) {
         return new CommonResponse<>(HttpStatus.OK, diaryService.getDiary(diaryId));
     }
 
     @GetMapping("/auth/v1.0.0/diaries")
     public CommonResponse<CalendarPageResponseDTO> getDiaries(CalendarPageRequestDTO calendarPageRequestDTO,
-                                                              @AuthenticationPrincipal PrincipalDetails principal) {
+                                                              @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) {
          return new CommonResponse<>(HttpStatus.OK, diaryService.getDiaries(calendarPageRequestDTO, principal));
     }
 
