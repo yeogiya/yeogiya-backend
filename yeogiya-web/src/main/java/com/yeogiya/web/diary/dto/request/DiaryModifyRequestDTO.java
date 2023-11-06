@@ -13,6 +13,7 @@ public class DiaryModifyRequestDTO {
     @NotBlank(message = "내용은 필수 입력 사항입니다.")
     private String content;
     private OpenYn openYn;
+    private Double star;
 
     private List<String> hashtags;
 
