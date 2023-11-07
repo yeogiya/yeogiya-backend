@@ -3,10 +3,10 @@
 ## 백엔드 기술 스택
 - Language: Java 11
 - Framework: Spring Boot 2.7.4, Spring Security, Spring Data JPA, Gradle
-- API 문서화: Swagger(Springfox)
+- API 문서화: Swagger(Springdoc)
 - DB: MySQL
-- 인프라: AWS - EC2, S3, CloudFront, RDS(서치 후 결정)
-- CI/CD: Jenkins
+- 인프라: AWS - EC2, S3, CloudFront, RDS
+- CI/CD: Github Actions
 - 기타: Jira, Slack
 ## Commit Convention
 작업에 맞는 [gitmoji](https://gitmoji.dev/) + 메시지만으로도 어떤 기능을 개발했는지 명확하게 알 수 있도록 작성<br/>
