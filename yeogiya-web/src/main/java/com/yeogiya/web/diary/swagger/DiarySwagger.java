@@ -1,4 +1,4 @@
-package com.yeogiya.web.swagger;
+package com.yeogiya.web.diary.swagger;
 
 import com.yeogiya.dto.response.CommonResponse;
 import com.yeogiya.web.auth.PrincipalDetails;

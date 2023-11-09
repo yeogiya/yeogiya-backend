@@ -1,8 +1,14 @@
-package com.yeogiya.web.swagger;
+package com.yeogiya.web.member.swagger;
 
 import com.yeogiya.dto.response.CommonResponse;
-import com.yeogiya.web.dto.MemberSignUpDTO;
-import com.yeogiya.web.dto.member.*;
+import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
+import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
+import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
+import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
+import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
+import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
+import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
+import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +22,7 @@ import java.security.Principal;
 public interface MemberSwagger {
 
     @Operation(summary = "이메일 회원가입")
-    CommonResponse<Void> signUp(MemberSignUpDTO memberSignUpDTO);
+    CommonResponse<Void> signUp(SignUpRequestDTO memberSignUpDTO);
 
     @Operation(summary = "아이디 중복 체크")
     CommonResponse<CheckDuplicationResponseDTO> checkIdDuplicate(String id);

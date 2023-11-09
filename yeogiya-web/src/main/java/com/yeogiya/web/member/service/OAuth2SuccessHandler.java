@@ -1,13 +1,12 @@
-package com.yeogiya.web.service.member;
+package com.yeogiya.web.member.service;
 
 import com.yeogiya.entity.member.LoginType;
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
-import com.yeogiya.web.dto.member.OAuthAttributes;
-import com.yeogiya.web.dto.member.UserProfile;
+import com.yeogiya.web.member.dto.OAuthAttributes;
+import com.yeogiya.web.member.dto.UserProfile;
 import com.yeogiya.web.jwt.JwtService;
-import com.yeogiya.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

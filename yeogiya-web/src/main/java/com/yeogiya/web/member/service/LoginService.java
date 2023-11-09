@@ -1,4 +1,4 @@
-package com.yeogiya.web.service;
+package com.yeogiya.web.member.service;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.repository.MemberRepository;

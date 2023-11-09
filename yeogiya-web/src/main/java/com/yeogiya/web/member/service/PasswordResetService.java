@@ -1,4 +1,4 @@
-package com.yeogiya.web.service.member;
+package com.yeogiya.web.member.service;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.entity.member.PasswordResetEmailToken;

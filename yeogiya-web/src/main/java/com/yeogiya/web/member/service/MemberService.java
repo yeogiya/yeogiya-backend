@@ -1,4 +1,4 @@
-package com.yeogiya.web.service;
+package com.yeogiya.web.member.service;
 
 import com.yeogiya.entity.member.LoginType;
 import com.yeogiya.entity.member.Member;
@@ -6,17 +6,21 @@ import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.dto.MemberSignUpDTO;
-import com.yeogiya.web.dto.member.*;
+import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
+import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
 import com.yeogiya.web.image.ImageUploadService;
-import com.yeogiya.web.service.member.PasswordResetService;
+import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
+import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
+import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
+import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
+import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
+import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +33,7 @@ public class MemberService {
     private final ImageUploadService imageUploadService;
 
     @Transactional
-    public void signUp(MemberSignUpDTO memberSignUpDto) {
+    public void signUp(SignUpRequestDTO memberSignUpDto) {
         if (memberRepository.existsById(memberSignUpDto.getId())) {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_ID);
         }

@@ -1,8 +1,6 @@
-package com.yeogiya.web.service.member;
+package com.yeogiya.web.member.service;
 
 import com.yeogiya.entity.member.Role;
-import com.yeogiya.web.dto.member.OAuthAttributes;
-import com.yeogiya.web.dto.member.UserProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;

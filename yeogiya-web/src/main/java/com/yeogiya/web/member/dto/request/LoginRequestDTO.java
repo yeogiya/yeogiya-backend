@@ -1,4 +1,4 @@
-package com.yeogiya.web.dto.member;
+package com.yeogiya.web.member.dto.request;
 
 import com.yeogiya.entity.member.LoginType;
 import lombok.AllArgsConstructor;

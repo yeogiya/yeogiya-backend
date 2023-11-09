@@ -1,10 +1,16 @@
-package com.yeogiya.web.controller;
+package com.yeogiya.web.member.controller;
 
 import com.yeogiya.dto.response.CommonResponse;
-import com.yeogiya.web.dto.MemberSignUpDTO;
-import com.yeogiya.web.dto.member.*;
-import com.yeogiya.web.service.MemberService;
-import com.yeogiya.web.swagger.MemberSwagger;
+import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
+import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
+import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
+import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
+import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
+import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
+import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
+import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
+import com.yeogiya.web.member.service.MemberService;
+import com.yeogiya.web.member.swagger.MemberSwagger;
 import com.yeogiya.web.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +31,7 @@ public class MemberController implements MemberSwagger {
     private final MemberService memberService;
 
     @PostMapping("/public/v1.0.0/members/sign-up")
-    public CommonResponse<Void> signUp(@Valid @RequestBody MemberSignUpDTO memberSignUpDto) {
+    public CommonResponse<Void> signUp(@Valid @RequestBody SignUpRequestDTO memberSignUpDto) {
         memberService.signUp(memberSignUpDto);
         return new CommonResponse<>(HttpStatus.OK);
     }

@@ -1,4 +1,4 @@
-package com.yeogiya.web.service.member;
+package com.yeogiya.web.member.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
