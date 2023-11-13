@@ -3,7 +3,7 @@ package com.yeogiya.web.jwt;
 
 import com.yeogiya.entity.member.Member;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.service.MemberService;
+import com.yeogiya.web.member.service.MemberService;
 import com.yeogiya.web.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

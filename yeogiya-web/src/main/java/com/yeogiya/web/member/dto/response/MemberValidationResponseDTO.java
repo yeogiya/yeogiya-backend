@@ -1,4 +1,4 @@
-package com.yeogiya.web.dto;
+package com.yeogiya.web.member.dto.response;
 
 import lombok.*;
 

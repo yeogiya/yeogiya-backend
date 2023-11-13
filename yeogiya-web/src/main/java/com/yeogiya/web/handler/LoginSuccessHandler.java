@@ -1,7 +1,7 @@
 package com.yeogiya.web.handler;
 
 import com.yeogiya.web.jwt.JwtService;
-import com.yeogiya.web.service.MemberService;
+import com.yeogiya.web.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

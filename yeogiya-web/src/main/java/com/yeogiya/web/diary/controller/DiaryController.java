@@ -1,8 +1,6 @@
 package com.yeogiya.web.diary.controller;
 
 import com.yeogiya.dto.response.CommonResponse;
-import com.yeogiya.enumerable.EnumErrorCode;
-import com.yeogiya.exception.ClientException;
 import com.yeogiya.web.auth.PrincipalDetails;
 import com.yeogiya.web.diary.dto.request.CalendarPageRequestDTO;
 import com.yeogiya.web.diary.dto.request.DiaryModifyRequestDTO;
@@ -12,7 +10,7 @@ import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
 import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.diary.service.DiaryService;
-import com.yeogiya.web.swagger.DiarySwagger;
+import com.yeogiya.web.diary.swagger.DiarySwagger;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 @Slf4j
