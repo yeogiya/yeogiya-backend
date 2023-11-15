@@ -18,6 +18,11 @@ public enum EnumErrorCode {
     INVALID_MEMBER_STATUS(100007, "유효하지 않은 회원 상태입니다."),
     LOGIN_FAILED(100008, "아이디 또는 비밀번호를 확인해주세요."),
 
+    INVALID_TOKEN(100009, "유효하지 않은 토큰입니다."),
+
+    INVALID_PERMISSION(100010, "인증에 실패했습니다."),
+
+
     FAIL_FILE_UPLOAD(200001, "파일 업로드에 실패했습니다."),
     INCORRECTLY_FORMATTED_FILE(200002, "잘못된 형식의 파일입니다."),
     AVAILABLE_AFTER_LOGGING_IN(200003, "로그인 후 이용 가능합니다."),

@@ -3,10 +3,7 @@ package com.yeogiya.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeogiya.repository.MemberRepository;
 import com.yeogiya.web.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.yeogiya.web.handler.CustomLogoutHandler;
-import com.yeogiya.web.handler.CustomLogoutSuccessHandler;
-import com.yeogiya.web.handler.LoginFailureHandler;
-import com.yeogiya.web.handler.LoginSuccessHandler;
+import com.yeogiya.web.handler.*;
 import com.yeogiya.web.jwt.JwtAuthenticationProcessingFilter;
 import com.yeogiya.web.jwt.JwtService;
 import com.yeogiya.web.member.service.LoginService;
@@ -90,6 +87,11 @@ public class SecurityConfig {
                 .addLogoutHandler(customLogoutHandler)
                 .logoutUrl("/api/auth/v1.0.0/members/logout")
                 .logoutSuccessHandler(customLogoutSuccessHandler)
+            
+//               //== 토큰 유효하지않을때 커스텀에러 던지기 ==//
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+
 
                 .and()
 //                //== 소셜 로그인 설정 ==//

@@ -1,12 +1,16 @@
 package com.yeogiya.web.jwt;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yeogiya.dto.response.ErrorResponse;
 import com.yeogiya.entity.member.Member;
+import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
 import com.yeogiya.web.member.service.MemberService;
 import com.yeogiya.web.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -53,31 +57,38 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!isFilterRequired(request.getRequestURI())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        ObjectMapper objectMapper = new ObjectMapper();
+       try {
+           if (!isFilterRequired(request.getRequestURI())) {
+               filterChain.doFilter(request, response);
+               return;
+           }
 
-        // 사용자 요청 헤더에서 RefreshToken 추출
-        // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
-        // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
-        // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
-        String refreshToken = jwtService.extractRefreshToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
+           // 사용자 요청 헤더에서 RefreshToken 추출
+           // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
+           // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
+           // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
+           String refreshToken = jwtService.extractRefreshToken(request)
+               .filter(jwtService::isTokenValid)
+               .orElse(null);
+           // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
+           // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
+           // 일치한다면 AccessToken을 재발급해준다.
+           if (refreshToken != null) {
+               checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+               return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
+           }
+           // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
+           // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
+           // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
+           checkAccessTokenAndAuthentication(request, response, filterChain);
+       } catch (ClientException e) {
+           response.setStatus(e.getHttpStatus().value());
+           response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+           response.setCharacterEncoding("UTF-8");
+           objectMapper.writeValue(response.getWriter(), ErrorResponse.of(e));
+       }
 
-        // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
-        // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
-        // 일치한다면 AccessToken을 재발급해준다.
-        if (refreshToken != null) {
-            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-            return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
-        }
-
-        // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
-        // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
-        // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
-        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     private boolean isFilterRequired(String requestURI) {
