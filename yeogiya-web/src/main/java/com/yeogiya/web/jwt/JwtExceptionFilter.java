@@ -1,4 +1,4 @@
-package com.yeogiya.web.handler;
+package com.yeogiya.web.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeogiya.dto.response.ErrorResponse;

@@ -90,8 +90,6 @@ public class SecurityConfig {
             
 //               //== 토큰 유효하지않을때 커스텀에러 던지기 ==//
                 .and()
-                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
-                .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 
 
