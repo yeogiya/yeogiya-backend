@@ -27,7 +27,13 @@ public class Place {
     private String address;
 
     @Column(name = "kakao_id")
-    private String kakaoId;
+    private int kakaoId;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
 
     @OneToMany(mappedBy = "place", orphanRemoval = true, targetEntity = DiaryPlace.class)
     private List<DiaryPlace> diaryPlaces = new ArrayList<>();

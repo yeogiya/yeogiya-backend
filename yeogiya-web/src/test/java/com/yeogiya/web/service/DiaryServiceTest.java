@@ -79,7 +79,7 @@ public class DiaryServiceTest {
         PrincipalDetails principalDetails = new PrincipalDetails(member);
         String content = "방가방가방가";
         String hashtag3 = "#바부";
-        String kakaoId = "4200";
+        int kakaoId = 1004;
         DiarySaveRequestDTO diarySaveRequestDTO = DiarySaveRequestDTO.builder()
             .content(content)
             .openYn(OpenYn.Y)
@@ -90,6 +90,8 @@ public class DiaryServiceTest {
             .name("하이루")
             .address("서울시 무슨구 무슨동")
             .kakaoId(kakaoId)
+            .latitude(37.5759)
+            .longitude(126.9768)
             .build();
 
         MockMultipartFile img1 = new MockMultipartFile("image", "img1.png", "png", new FileInputStream("src/test/resources/image/img1.jpg"));

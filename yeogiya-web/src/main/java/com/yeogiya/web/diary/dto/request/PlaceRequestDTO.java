@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 public class PlaceRequestDTO {
     private String name;
     private String address;
-    private String kakaoId;
+    private int kakaoId;
+    private Double latitude;
+    private Double longitude;
 
 
 }
