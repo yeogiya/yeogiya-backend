@@ -82,6 +82,7 @@ project(':yeogiya-web') {
 
 	tasks.named('test') {
 		useJUnitPlatform()
+		systemProperty "jasypt.encryptor.password", System.getProperty("jasypt.encryptor.password")
 	}
 }
 

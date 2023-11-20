@@ -77,12 +77,14 @@ public class DiaryService {
         }
 
         // 장소 저장 로직
-        String kakaoId = placeRequestDTO.getKakaoId();
+        int kakaoId = placeRequestDTO.getKakaoId();
         placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
                 Place.builder()
                 .name(placeRequestDTO.getName())
                 .address(placeRequestDTO.getAddress())
                 .kakaoId(placeRequestDTO.getKakaoId())
+                .longitude(placeRequestDTO.getLongitude())
+                .latitude(placeRequestDTO.getLatitude())
                 .build()));
 
         Place place = placeRepository.findByKakaoId(kakaoId)
@@ -136,12 +138,14 @@ public class DiaryService {
         }
 
         // 장소
-        String kakaoId = placeRequestDTO.getKakaoId();
+        int kakaoId = placeRequestDTO.getKakaoId();
         placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
                 Place.builder()
                         .name(placeRequestDTO.getName())
                         .address(placeRequestDTO.getAddress())
                         .kakaoId(placeRequestDTO.getKakaoId())
+                        .longitude(placeRequestDTO.getLongitude())
+                        .latitude(placeRequestDTO.getLatitude())
                         .build()));
 
         Place place = placeRepository.findByKakaoId(kakaoId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
