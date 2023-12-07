@@ -1,4 +1,4 @@
-package com.yeogiya.web.dto.member;
+package com.yeogiya.web.member.dto.response;
 
 import com.yeogiya.entity.member.Member;
 import lombok.AllArgsConstructor;
