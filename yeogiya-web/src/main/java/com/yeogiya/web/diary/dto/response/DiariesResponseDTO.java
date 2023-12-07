@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,27 +23,25 @@ public class DiariesResponseDTO {
     private Long diaryId;
     private Long memberId;
     private String placeName;
-    private String content;
+
     private String openYn;
     private Double star;
-    private List<String> diaryImages;
-    private List<String> hashtags;
+
+    private LocalDateTime date;
+    private String diaryImage;
+
 
     public DiariesResponseDTO(Diary diary){
         this.diaryId = diary.getId();
-        this.content=diary.getContent();
         this.openYn=diary.getOpenYn().toString();
         this.memberId = diary.getMember().getMemberId();
         this.star = diary.getStar();
+        this.date = diary.getCreatedAt();
 
-        this.hashtags = diary.getDiaryHashtags().stream()
-                .map(DiaryHashtag::getHashtag)
-                .map(Hashtag::getName)
-                .collect(Collectors.toList());
-
-        this.diaryImages = diary.getDiaryImages().stream()
+        this.diaryImage = diary.getDiaryImages().stream()
                 .map(DiaryImage::getPath)
-                .collect(Collectors.toList());
+            .findFirst()
+            .orElse("Not");
 
         this.placeName = diary.getDiaryPlace().getPlace().getName();
 
