@@ -55,4 +55,7 @@ public interface MemberSwagger {
 
     @Operation(summary = "회원 탈퇴")
     CommonResponse<Void> withdraw(Principal principal);
+
+    @Operation(summary = "액세스 토큰으로 회원 정보 조회")
+    CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal);
 }
