@@ -156,4 +156,10 @@ public class MemberService {
         Member member = getMember(id);
         member.withdraw();
     }
+
+    public MemberResponseDTO getMemberInfo(String id) {
+        Member member = getMember(id);
+
+        return new MemberResponseDTO(member);
+    }
 }

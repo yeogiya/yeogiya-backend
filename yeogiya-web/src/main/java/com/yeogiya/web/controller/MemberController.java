@@ -102,4 +102,11 @@ public class MemberController implements MemberSwagger {
 
         return new CommonResponse<>(HttpStatus.OK);
     }
+
+    @GetMapping("/auth/v1.0.0/members")
+    public CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal) {
+        MemberResponseDTO response = memberService.getMemberInfo(MemberUtil.getMemberId(principal));
+
+        return new CommonResponse<>(HttpStatus.OK, response);
+    }
 }
