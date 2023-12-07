@@ -11,10 +11,7 @@ import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
 import com.yeogiya.web.image.ImageUploadService;
 import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
 import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
-import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
-import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
-import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
-import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
+import com.yeogiya.web.member.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -159,5 +156,11 @@ public class MemberService {
     public void withdraw(String id) {
         Member member = getMember(id);
         member.withdraw();
+    }
+
+    public MemberResponseDTO getMemberInfo(String id) {
+        Member member = getMember(id);
+
+        return new MemberResponseDTO(member);
     }
 }

@@ -5,10 +5,7 @@ import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
 import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
 import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
 import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
-import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
-import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
-import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
-import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
+import com.yeogiya.web.member.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,4 +52,7 @@ public interface MemberSwagger {
 
     @Operation(summary = "회원 탈퇴")
     CommonResponse<Void> withdraw(Principal principal);
+
+    @Operation(summary = "액세스 토큰으로 회원 정보 조회")
+    CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal);
 }

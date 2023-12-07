@@ -5,10 +5,7 @@ import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
 import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
 import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
 import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
-import com.yeogiya.web.member.dto.response.ChangeNicknameResponseDTO;
-import com.yeogiya.web.member.dto.response.ChangeProfileImgResponseDTO;
-import com.yeogiya.web.member.dto.response.CheckDuplicationResponseDTO;
-import com.yeogiya.web.member.dto.response.FindIdResponseDTO;
+import com.yeogiya.web.member.dto.response.*;
 import com.yeogiya.web.member.service.MemberService;
 import com.yeogiya.web.member.swagger.MemberSwagger;
 import com.yeogiya.web.util.MemberUtil;
@@ -107,5 +104,12 @@ public class MemberController implements MemberSwagger {
         memberService.withdraw(MemberUtil.getMemberId(principal));
 
         return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/v1.0.0/members")
+    public CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal) {
+        MemberResponseDTO response = memberService.getMemberInfo(MemberUtil.getMemberId(principal));
+
+        return new CommonResponse<>(HttpStatus.OK, response);
     }
 }
