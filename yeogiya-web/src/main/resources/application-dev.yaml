@@ -1,0 +1,118 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(7mHhiozxRxujB6T/1qo4h8rFsZMjo4OmqKXG7bri+qhNluOEf+Kq6VCWn0PlaeN/UGIsDozdqTroaSDbcp4bnlf/hyt+MsipoJDart5h7PDFl3EZfnz4ze9P+vK2PXFn)
+    username: ENC(uL7k1DzNozYov07EeJa/2g==)
+    password: ENC(zYa4HBAWShBPBoxDA0FzXewAPXLtIXwA)
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(WVRUn/shAzgPTEQ9jdc/OQtGrerBkJvwH+9Km2b06kf3G8FnH4DGqKFUJdfxJ0rLpPzclwbyI0xZBDRwDycRSH2Cv0o1y0j/kgVF26bZ6LHY2ByeQWE/2A==)
+            client-secret: ENC(jRlv3hXikfy+wxP/mG8p2n0YBBtNw2Q5A3T6ORqsOZwRXkU/HTFQaZvmLYL3CXxf)
+            scope:
+              - email
+              - profile
+          kakao:
+            client-id: ENC(HY53Di2j0w8RlheCI50P8jIr5q/DnkQFlSh3VQ+iB2kfZOcDCSBadIgetvJKfOFH)
+            client-secret: ENC(XWbQ4c9OjaJpnuAvlaw5OgS2mWNUzzFlG2xQHNVhN6m1Bq/aHCGgLtV7bSdoL+aQ)
+            scope: profile_nickname, profile_image, account_email
+            client-name: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://dev.yeogiya.shop:8080/login/oauth2/code/kakao"
+            client-authentication-method: POST
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# mail properties
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yeogiya2023
+    password: ENC(Thc83SifLO98zUVKUR4J6xImqCMg2d5bAN/pH6H6Hkk=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+# logging
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: trace
+  config: classpath:logback-spring.xml
+
+# encryption
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+# Swagger configuration
+springdoc:
+  packages-to-scan: com.yeogiya.web
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /api-docs
+    groups:
+      enabled: true
+  cache:
+    disabled: true
+
+
+jwt:
+  secretKey: sjdl129380dkjdkfjsl3993209
+
+  access:
+    expiration: 3600000 # 1시간(60분) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
+    header: Authorization
+
+  refresh:
+    expiration: 1209600000 #  (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> 하루) * 14(2주))
+    header: Authorization-refresh
+
+cloud:
+  aws:
+    credentials:
+      access-key: ENC(4X11tFciOmM8/CTYGIW6f1ooZDB2RC8xfrjzsM6a62I=)
+      secret-key: ENC(S/FsakCpRTMS7x2seRh8bizvtAtNVU/WP7IRhOCNWDrJmm0IRtAwdx9A7GRZpEmvsMXdGrx/rJs=)
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: bucket-yeogiya
+    stack:
+      auto: false
+
+
+
