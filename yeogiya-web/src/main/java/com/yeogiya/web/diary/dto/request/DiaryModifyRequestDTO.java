@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class DiaryModifyRequestDTO {
     private OpenYn openYn;
     private Double star;
 
+    private LocalDate date;
     private List<String> hashtags;
 
 

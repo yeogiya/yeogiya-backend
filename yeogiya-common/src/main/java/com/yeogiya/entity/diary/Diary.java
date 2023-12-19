@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class Diary extends BaseTimeEntity {
     @Column(name = "star", columnDefinition = "DECIMAL(2,1)")
     private Double star;
 
+    @Column(name = "date")
+    private LocalDate date;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
@@ -49,10 +53,11 @@ public class Diary extends BaseTimeEntity {
     @OneToOne(mappedBy = "diary", orphanRemoval = true)
     private DiaryPlace diaryPlace;
 
-    public void update(String content, OpenYn openYn, Double star) {
+    public void update(String content, OpenYn openYn, Double star, LocalDate date) {
         this.content = content;
         this.openYn = openYn;
         this.star = star;
+        this.date = date;
     }
 
 
