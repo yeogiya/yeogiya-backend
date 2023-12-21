@@ -115,4 +115,7 @@ cloud:
       auto: false
 
 
-
+email:
+  password:
+    reset:
+      url: https://yeogiya.shop/reset

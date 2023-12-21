@@ -7,6 +7,7 @@ import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.PasswordResetEmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,8 @@ public class PasswordResetService {
     private final PasswordResetEmailTokenRepository repository;
     private final JavaMailSender javaMailSender;
 
-    // TODO: 프론트팀에서 URL 받아서 세팅하기
-    private String resetUrl = "sample-url";
+    @Value("${email.password.reset.url}")
+    private String resetUrl;
 
     public void send(Member member) {
         PasswordResetEmailToken token = saveToken(member.getMemberId());

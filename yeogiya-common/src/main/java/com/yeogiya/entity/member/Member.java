@@ -109,4 +109,8 @@ public class Member extends BaseTimeEntity {
         this.status = Status.N;
         this.withdrawalAt = LocalDateTime.now();
     }
+
+    public boolean isWithdrawal() {
+        return this.status.equals(Status.N);
+    }
 }

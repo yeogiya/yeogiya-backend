@@ -97,6 +97,10 @@ public class MemberService {
         Member member = memberRepository.findByIdAndEmail(requestDTO.getId(), requestDTO.getEmail())
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
 
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
         passwordResetService.send(member);
     }
 
@@ -105,6 +109,10 @@ public class MemberService {
         Long memberId = passwordResetService.getMemberIdByToken(requestDTO.getToken());
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
 
         // TODO: 기획 쪽에 같은 패스워드 체크 있는지 물어보고 있으면 추가
 
