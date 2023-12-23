@@ -171,7 +171,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
 
         configuration.addExposedHeader("Authorization");
-        configuration.addExposedHeader("Authorization-Refresh");
+        configuration.addExposedHeader("Authorization-refresh");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

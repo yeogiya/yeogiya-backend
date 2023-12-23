@@ -2,11 +2,17 @@ package com.yeogiya.web.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.yeogiya.entity.member.Member;
+import com.yeogiya.enumerable.EnumErrorCode;
+import com.yeogiya.exception.ClientException;
+import com.yeogiya.repository.MemberRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +39,8 @@ public class JwtService {
 
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
+
+    private final MemberRepository memberRepository;
 
     /**
      * JWT의 Subject와 Claim으로 Id 사용 -> 클레임의 name을 "id"으로 설정
@@ -157,5 +165,25 @@ public class JwtService {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+    @Transactional
+    public HttpHeaders reissue(String refreshToken) {
+        Member member = memberRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new ClientException.BadRequest(EnumErrorCode.INVALID_TOKEN));
+
+        return createHeader(member);
+    }
+
+    private HttpHeaders createHeader(Member member) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        String refreshToken = createRefreshToken();
+        member.updateRefreshToken(refreshToken);
+
+        httpHeaders.set("Authorization", createAccessToken(member.getId()));
+        httpHeaders.set("Authorization-refresh", refreshToken);
+
+        return httpHeaders;
     }
 }
