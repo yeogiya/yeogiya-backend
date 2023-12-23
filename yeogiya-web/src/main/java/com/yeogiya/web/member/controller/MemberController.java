@@ -1,10 +1,7 @@
 package com.yeogiya.web.member.controller;
 
 import com.yeogiya.dto.response.CommonResponse;
-import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
-import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
-import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
-import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
+import com.yeogiya.web.member.dto.request.*;
 import com.yeogiya.web.member.dto.response.*;
 import com.yeogiya.web.member.service.MemberService;
 import com.yeogiya.web.member.swagger.MemberSwagger;
@@ -100,8 +97,8 @@ public class MemberController implements MemberSwagger {
     }
 
     @PostMapping("/auth/v1.0.0/members/withdraw")
-    public CommonResponse<Void> withdraw(Principal principal) {
-        memberService.withdraw(MemberUtil.getMemberId(principal));
+    public CommonResponse<Void> withdraw(Principal principal, @RequestBody WithdrawalRequestDTO requestDTO) {
+        memberService.withdraw(MemberUtil.getMemberId(principal), requestDTO);
 
         return new CommonResponse<>(HttpStatus.OK);
     }

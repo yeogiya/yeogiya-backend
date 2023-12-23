@@ -6,11 +6,8 @@ import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
-import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
+import com.yeogiya.web.member.dto.request.*;
 import com.yeogiya.web.image.ImageUploadService;
-import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
-import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.yeogiya.web.member.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -161,9 +158,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void withdraw(String id) {
+    public void withdraw(String id, WithdrawalRequestDTO requestDTO) {
         Member member = getMember(id);
-        member.withdraw();
+        member.withdraw(requestDTO.getWithdrawalReason(), requestDTO.getWithdrawalReasonDetail());
     }
 
     public MemberResponseDTO getMemberInfo(String id) {
