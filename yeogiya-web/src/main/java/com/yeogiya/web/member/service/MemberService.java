@@ -118,23 +118,24 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangeNicknameResponseDTO changeNickname(String memberId, ChangeNicknameRequestDTO requestDTO) {
+    public ModifyMemberInfoResponseDTO modify(String memberId, String newNickname, MultipartFile profileImg) {
         Member member = getMember(memberId);
-        member.changeNickname(requestDTO.getNickname());
+        String nickname = member.getNickname();
 
-        return ChangeNicknameResponseDTO.builder()
-                .nickname(member.getNickname())
-                .build();
-    }
+        if (newNickname != null && !newNickname.equals(nickname) && memberRepository.existsByNickname(newNickname)) {
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
+        }
 
-    @Transactional
-    public ChangeProfileImgResponseDTO changeProfileImg(String memberId, MultipartFile profileImg) {
-        Member member = getMember(memberId);
-        String imageUrl = imageUploadService.upload(profileImg);
+        String imageUrl = member.getProfileImg();
 
-        member.changeProfileImg(imageUrl);
+        if (profileImg != null) {
+            imageUrl = imageUploadService.upload(profileImg);
+        }
 
-        return ChangeProfileImgResponseDTO.builder()
+        member.modify(newNickname, imageUrl);
+
+        return ModifyMemberInfoResponseDTO.builder()
+                .nickname(newNickname)
                 .profileImgUrl(imageUrl)
                 .build();
     }

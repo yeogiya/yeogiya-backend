@@ -9,6 +9,7 @@ import com.yeogiya.web.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,24 +79,6 @@ public class MemberController implements MemberSwagger {
         return new CommonResponse<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/auth/v1.0.0/members/change-nickname")
-    public CommonResponse<ChangeNicknameResponseDTO> changeNickname(Principal principal,
-                                                                    @RequestBody @Valid ChangeNicknameRequestDTO requestDTO) {
-
-        ChangeNicknameResponseDTO responseDTO = memberService.changeNickname(MemberUtil.getMemberId(principal), requestDTO);
-
-        return new CommonResponse<>(HttpStatus.OK, responseDTO);
-    }
-
-    @PatchMapping(value = "/auth/v1.0.0/members/change-profile-img", consumes = "multipart/form-data")
-    public CommonResponse<ChangeProfileImgResponseDTO> changeProfileImg(Principal principal,
-                                                                        @RequestPart MultipartFile profileImg) {
-
-        ChangeProfileImgResponseDTO responseDTO = memberService.changeProfileImg(MemberUtil.getMemberId(principal), profileImg);
-
-        return new CommonResponse<>(HttpStatus.OK, responseDTO);
-    }
-
     @PostMapping("/auth/v1.0.0/members/withdraw")
     public CommonResponse<Void> withdraw(Principal principal, @RequestBody WithdrawalRequestDTO requestDTO) {
         memberService.withdraw(MemberUtil.getMemberId(principal), requestDTO);
@@ -106,6 +89,16 @@ public class MemberController implements MemberSwagger {
     @GetMapping("/auth/v1.0.0/members")
     public CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal) {
         MemberResponseDTO response = memberService.getMemberInfo(MemberUtil.getMemberId(principal));
+
+        return new CommonResponse<>(HttpStatus.OK, response);
+    }
+
+    @PatchMapping(value = "/auth/v1.0.0/members", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<ModifyMemberInfoResponseDTO> modify(Principal principal,
+                                                              @RequestPart(name = "nickname", required = false) String nickname,
+                                                              @RequestPart(name = "profileImg", required = false) MultipartFile profileImg) {
+
+        ModifyMemberInfoResponseDTO response = memberService.modify(MemberUtil.getMemberId(principal), nickname, profileImg);
 
         return new CommonResponse<>(HttpStatus.OK, response);
     }

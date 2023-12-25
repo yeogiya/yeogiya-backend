@@ -4,6 +4,7 @@ import com.yeogiya.dto.response.CommonResponse;
 import com.yeogiya.web.member.dto.request.*;
 import com.yeogiya.web.member.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -36,17 +37,6 @@ public interface MemberSwagger {
     @Operation(summary = "비밀번호 재설정")
     CommonResponse<Void> resetPassword(ResetPasswordRequestDTO requestDTO);
 
-    @Operation(summary = "닉네임 변경", requestBody = @RequestBody(content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ChangeNicknameRequestDTO.class))
-    }))
-    CommonResponse<ChangeNicknameResponseDTO> changeNickname(Principal principal,
-                                                             ChangeNicknameRequestDTO requestDTO);
-
-    @Operation(summary = "프로필 이미지 변경", requestBody = @RequestBody(content = {
-            @Content(mediaType = "multipart/form-data", schema = @Schema(implementation = MultipartFile.class))
-    }))
-    CommonResponse<ChangeProfileImgResponseDTO> changeProfileImg(Principal principal, MultipartFile profileImg);
-
     @Operation(summary = "회원 탈퇴", requestBody = @RequestBody(content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = WithdrawalRequestDTO.class))
     }))
@@ -54,4 +44,9 @@ public interface MemberSwagger {
 
     @Operation(summary = "액세스 토큰으로 회원 정보 조회")
     CommonResponse<MemberResponseDTO> getMemberInfo(Principal principal);
+
+    @Operation(summary = "회원 정보 수정")
+    CommonResponse<ModifyMemberInfoResponseDTO> modify(@Parameter(hidden = true) Principal principal,
+                                                       String nickname,
+                                                       MultipartFile profileImage);
 }
