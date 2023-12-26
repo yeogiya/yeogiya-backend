@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -126,16 +127,18 @@ public class MemberService {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
         }
 
+        nickname = ObjectUtils.isEmpty(newNickname) ? nickname : newNickname;
+
         String imageUrl = member.getProfileImg();
 
         if (profileImg != null) {
             imageUrl = imageUploadService.upload(profileImg);
         }
 
-        member.modify(newNickname, imageUrl);
+        member.modify(nickname, imageUrl);
 
         return ModifyMemberInfoResponseDTO.builder()
-                .nickname(newNickname)
+                .nickname(nickname)
                 .profileImgUrl(imageUrl)
                 .build();
     }
