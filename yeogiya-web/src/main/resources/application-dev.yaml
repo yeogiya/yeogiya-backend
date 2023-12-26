@@ -65,7 +65,7 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: trace
-  config: classpath:logback-spring.xml
+  config: classpath:logback/logback-${spring.profiles.active}.xml
 
 # encryption
 jasypt:
