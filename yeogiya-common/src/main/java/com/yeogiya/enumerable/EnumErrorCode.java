@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum EnumErrorCode {
 
     SUCCESS(1, "Success"),
+    INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다."),
 
     ALREADY_EXISTS_ID(100001, "이미 존재하는 아이디입니다."),
     ALREADY_EXISTS_EMAIL(100002, "이미 존재하는 이메일입니다."),
@@ -21,7 +22,7 @@ public enum EnumErrorCode {
     INVALID_TOKEN(100009, "유효하지 않은 토큰입니다."),
 
     INVALID_PERMISSION(100010, "인증에 실패했습니다."),
-
+    INVALID_PASSWORD(100011, "비밀번호가 일치하지 않습니다."),
 
     FAIL_FILE_UPLOAD(200001, "파일 업로드에 실패했습니다."),
     INCORRECTLY_FORMATTED_FILE(200002, "잘못된 형식의 파일입니다."),
@@ -29,7 +30,6 @@ public enum EnumErrorCode {
     NOT_FOUND_PLACE(200004, "장소가 없습니다."),
     NOT_FOUND_DIARY(200005, "해당 공간일기가 존재하지 않습니다."),
     INVALID_ACCESS(200006, "잘못된 접근입니다."),
-
 
     ;
 

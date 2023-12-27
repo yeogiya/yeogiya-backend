@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -17,7 +18,8 @@ public class ImageUploadService {
     @Transactional
     public String upload(MultipartFile multipartFile) {
         try {
-            return s3Uploader.upload(multipartFile, multipartFile.getOriginalFilename());
+            String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+            return s3Uploader.upload(multipartFile, fileName);
         } catch (IOException e) {
             throw new RuntimeException(e); // TODO: 추후 커스텀 에러로 변경
         }

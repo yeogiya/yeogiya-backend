@@ -79,6 +79,20 @@ public class MemberController implements MemberSwagger {
         return new CommonResponse<>(HttpStatus.OK);
     }
 
+    @PostMapping("/auth/v1.0.0/members/check-password")
+    public CommonResponse<Void> checkPassword(Principal principal, @RequestBody @Valid CheckPasswordRequestDTO requestDTO) {
+        memberService.checkPassword(MemberUtil.getMemberId(principal), requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/auth/v1.0.0/members/reset-password")
+    public CommonResponse<Void> resetPassword(Principal principal, @RequestBody @Valid AuthResetPasswordRequestDTO requestDTO) {
+        memberService.resetPassword(MemberUtil.getMemberId(principal), requestDTO);
+
+        return new CommonResponse<>(HttpStatus.OK);
+    }
+
     @PostMapping("/auth/v1.0.0/members/withdraw")
     public CommonResponse<Void> withdraw(Principal principal, @RequestBody WithdrawalRequestDTO requestDTO) {
         memberService.withdraw(MemberUtil.getMemberId(principal), requestDTO);

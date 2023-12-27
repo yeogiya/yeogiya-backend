@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -118,6 +119,18 @@ public class MemberService {
     }
 
     @Transactional
+    public void resetPassword(String memberId, AuthResetPasswordRequestDTO requestDTO) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
+        member.resetPassword(passwordEncoder, requestDTO.getPassword());
+    }
+
+    @Transactional
     public ModifyMemberInfoResponseDTO modify(String memberId, String newNickname, MultipartFile profileImg) {
         Member member = getMember(memberId);
         String nickname = member.getNickname();
@@ -126,16 +139,18 @@ public class MemberService {
             throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
         }
 
+        nickname = ObjectUtils.isEmpty(newNickname) ? nickname : newNickname;
+
         String imageUrl = member.getProfileImg();
 
         if (profileImg != null) {
             imageUrl = imageUploadService.upload(profileImg);
         }
 
-        member.modify(newNickname, imageUrl);
+        member.modify(nickname, imageUrl);
 
         return ModifyMemberInfoResponseDTO.builder()
-                .nickname(newNickname)
+                .nickname(nickname)
                 .profileImgUrl(imageUrl)
                 .build();
     }
@@ -168,5 +183,11 @@ public class MemberService {
         Member member = getMember(id);
 
         return new MemberResponseDTO(member);
+    }
+
+    public void checkPassword(String id, CheckPasswordRequestDTO requestDTO) {
+        if (!getMember(id).checkPassword(passwordEncoder, requestDTO.getPassword())) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_PASSWORD);
+        }
     }
 }
