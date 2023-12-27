@@ -119,6 +119,18 @@ public class MemberService {
     }
 
     @Transactional
+    public void resetPassword(String memberId, AuthResetPasswordRequestDTO requestDTO) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
+        member.resetPassword(passwordEncoder, requestDTO.getPassword());
+    }
+
+    @Transactional
     public ModifyMemberInfoResponseDTO modify(String memberId, String newNickname, MultipartFile profileImg) {
         Member member = getMember(memberId);
         String nickname = member.getNickname();
@@ -171,5 +183,11 @@ public class MemberService {
         Member member = getMember(id);
 
         return new MemberResponseDTO(member);
+    }
+
+    public void checkPassword(String id, CheckPasswordRequestDTO requestDTO) {
+        if (!getMember(id).checkPassword(passwordEncoder, requestDTO.getPassword())) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_PASSWORD);
+        }
     }
 }

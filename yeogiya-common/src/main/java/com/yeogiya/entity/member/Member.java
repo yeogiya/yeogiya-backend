@@ -118,4 +118,8 @@ public class Member extends BaseTimeEntity {
     public boolean isWithdrawal() {
         return this.status.equals(Status.N);
     }
+
+    public boolean checkPassword(PasswordEncoder passwordEncoder, String password) {
+        return passwordEncoder.matches(password, this.password);
+    }
 }

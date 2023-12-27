@@ -37,6 +37,14 @@ public interface MemberSwagger {
     @Operation(summary = "비밀번호 재설정")
     CommonResponse<Void> resetPassword(ResetPasswordRequestDTO requestDTO);
 
+    @Operation(summary = "비밀번호 재설정 전 현재 비밀번호 확인")
+    CommonResponse<Void> checkPassword(@Parameter(hidden = true) Principal principal,
+                                       CheckPasswordRequestDTO requestDTO);
+
+    @Operation(summary = "로그인한 회원 비밀번호 재설정")
+    CommonResponse<Void> resetPassword(@Parameter(hidden = true) Principal principal,
+                                       AuthResetPasswordRequestDTO requestDTO);
+
     @Operation(summary = "회원 탈퇴", requestBody = @RequestBody(content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = WithdrawalRequestDTO.class))
     }))
