@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum EnumErrorCode {
 
     SUCCESS(1, "Success"),
+    INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다."),
 
     ALREADY_EXISTS_ID(100001, "이미 존재하는 아이디입니다."),
     ALREADY_EXISTS_EMAIL(100002, "이미 존재하는 이메일입니다."),
