@@ -62,7 +62,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private String generateRandomNickname() {
-        return "랜덤 닉네임" + Math.random();
+        return ("랜덤 닉네임" + Math.random()).replace(".", "");
     }
 
     private UserProfile getUserProfile(String registrationId, OAuth2User oAuth2User) {
