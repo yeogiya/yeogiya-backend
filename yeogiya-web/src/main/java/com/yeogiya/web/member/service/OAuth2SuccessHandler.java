@@ -12,8 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
+public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final MemberService memberService;
     private final JwtService jwtService;
@@ -59,10 +60,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
         memberService.updateRefreshToken(member.getId(), refreshToken);
+
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8000/login/sns") // TODO: 추후 배포 URL로 수정
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
+                .build().toUriString();
+
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 
     private String generateRandomNickname() {
-        return "랜덤 닉네임" + Math.random();
+        return ("랜덤 닉네임" + Math.random()).replace(".", "");
     }
 
     private UserProfile getUserProfile(String registrationId, OAuth2User oAuth2User) {
