@@ -11,6 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestControllerAdvice
 public class YeogiyaExceptionHandler {
@@ -27,8 +29,9 @@ public class YeogiyaExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handle(Exception ex) {
-        log.error("Internal Server Error. message = {}", ex.getMessage());
+    public ResponseEntity<ErrorResponse> handle(Exception ex, HttpServletRequest req) {
+        log.error(req.getRequestURI());
+        log.error(ex.getMessage(), ex);
         return handle(new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR));
     }
 }
