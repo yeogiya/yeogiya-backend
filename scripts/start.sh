@@ -23,7 +23,7 @@ chmod +x $JAR_FILE
 # jar 파일 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
 nohup java -jar \
-          -Dspring.profiles.active=local \
+          -Dspring.profiles.active=dev \
           -Djasypt.encryptor.password=$JASYPT_PASSWORD \
           $JAR_FILE > $APP_LOG 2> $ERROR_LOG &
 
