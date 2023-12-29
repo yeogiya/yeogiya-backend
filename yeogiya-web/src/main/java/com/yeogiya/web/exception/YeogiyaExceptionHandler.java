@@ -1,8 +1,10 @@
 package com.yeogiya.web.exception;
 
 import com.yeogiya.dto.response.ErrorResponse;
+import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.BaseException;
 import com.yeogiya.exception.ClientException;
+import com.yeogiya.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,5 +24,11 @@ public class YeogiyaExceptionHandler {
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return handle(new ClientException.BadRequest(400, message));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handle(Exception ex) {
+        log.error("Internal Server Error. message = {}", ex.getMessage());
+        return handle(new ServerException.InternalServerError(EnumErrorCode.INTERNAL_SERVER_ERROR));
     }
 }
