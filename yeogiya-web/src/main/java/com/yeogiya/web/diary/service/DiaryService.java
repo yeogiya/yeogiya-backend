@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -153,7 +154,7 @@ public class DiaryService {
         diaryPlace.update(place);
 
 
-        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar());
+        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar(), diaryModifyRequestDTO.getDate());
 
 
         return DiaryIdResponseDTO.builder()
@@ -192,9 +193,11 @@ public class DiaryService {
             Calendar cal = Calendar.getInstance();
             cal.set(calendarPageRequestDTO.getYear(), calendarPageRequestDTO.getMonth(),calendarPageRequestDTO.getDay());
             calendarPageRequestDTO.setDay(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-            diaries = diaryRepository.findAllByCreatedAtBetweenAndMemberOrderByCreatedAtAsc(
-                    DateUtils.startDateTime(DateUtils.startDate(calendarPageRequestDTO))
-                    ,DateUtils.endDateTime(DateUtils.getDate(calendarPageRequestDTO)),principal.getMember());
+            LocalDate startDate = DateUtils.startDate(calendarPageRequestDTO);
+            LocalDate endDate = DateUtils.getDate(calendarPageRequestDTO);
+            diaries = diaryRepository.findAllByDateBetweenAndMemberOrderByDateAsc(
+                    DateUtils.startDate(calendarPageRequestDTO)
+                    ,DateUtils.getDate(calendarPageRequestDTO),principal.getMember());
         // }
 
         CalendarPageResponseDTO calendarPageResponseDTO = new CalendarPageResponseDTO();

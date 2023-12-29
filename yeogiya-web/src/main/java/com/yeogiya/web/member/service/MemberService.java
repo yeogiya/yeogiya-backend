@@ -6,16 +6,14 @@ import com.yeogiya.entity.member.Role;
 import com.yeogiya.enumerable.EnumErrorCode;
 import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.MemberRepository;
-import com.yeogiya.web.member.dto.request.ChangeNicknameRequestDTO;
-import com.yeogiya.web.member.dto.request.SignUpRequestDTO;
+import com.yeogiya.web.member.dto.request.*;
 import com.yeogiya.web.image.ImageUploadService;
-import com.yeogiya.web.member.dto.request.ResetPasswordRequestDTO;
-import com.yeogiya.web.member.dto.request.SendPasswordResetEmailRequestDTO;
 import com.yeogiya.web.member.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -97,6 +95,10 @@ public class MemberService {
         Member member = memberRepository.findByIdAndEmail(requestDTO.getId(), requestDTO.getEmail())
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
 
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
         passwordResetService.send(member);
     }
 
@@ -106,6 +108,10 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
 
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
         // TODO: 기획 쪽에 같은 패스워드 체크 있는지 물어보고 있으면 추가
 
         member.resetPassword(passwordEncoder, requestDTO.getPassword());
@@ -113,23 +119,38 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangeNicknameResponseDTO changeNickname(String memberId, ChangeNicknameRequestDTO requestDTO) {
-        Member member = getMember(memberId);
-        member.changeNickname(requestDTO.getNickname());
+    public void resetPassword(String memberId, AuthResetPasswordRequestDTO requestDTO) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
 
-        return ChangeNicknameResponseDTO.builder()
-                .nickname(member.getNickname())
-                .build();
+        if (member.isWithdrawal()) {
+            throw new ClientException.Conflict(EnumErrorCode.INVALID_MEMBER_STATUS);
+        }
+
+        member.resetPassword(passwordEncoder, requestDTO.getPassword());
     }
 
     @Transactional
-    public ChangeProfileImgResponseDTO changeProfileImg(String memberId, MultipartFile profileImg) {
+    public ModifyMemberInfoResponseDTO modify(String memberId, String newNickname, MultipartFile profileImg) {
         Member member = getMember(memberId);
-        String imageUrl = imageUploadService.upload(profileImg);
+        String nickname = member.getNickname();
 
-        member.changeProfileImg(imageUrl);
+        if (newNickname != null && !newNickname.equals(nickname) && memberRepository.existsByNickname(newNickname)) {
+            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_NICKNAME);
+        }
 
-        return ChangeProfileImgResponseDTO.builder()
+        nickname = ObjectUtils.isEmpty(newNickname) ? nickname : newNickname;
+
+        String imageUrl = member.getProfileImg();
+
+        if (profileImg != null) {
+            imageUrl = imageUploadService.upload(profileImg);
+        }
+
+        member.modify(nickname, imageUrl);
+
+        return ModifyMemberInfoResponseDTO.builder()
+                .nickname(nickname)
                 .profileImgUrl(imageUrl)
                 .build();
     }
@@ -153,14 +174,20 @@ public class MemberService {
     }
 
     @Transactional
-    public void withdraw(String id) {
+    public void withdraw(String id, WithdrawalRequestDTO requestDTO) {
         Member member = getMember(id);
-        member.withdraw();
+        member.withdraw(requestDTO.getWithdrawalReason(), requestDTO.getWithdrawalReasonDetail());
     }
 
     public MemberResponseDTO getMemberInfo(String id) {
         Member member = getMember(id);
 
         return new MemberResponseDTO(member);
+    }
+
+    public void checkPassword(String id, CheckPasswordRequestDTO requestDTO) {
+        if (!getMember(id).checkPassword(passwordEncoder, requestDTO.getPassword())) {
+            throw new ClientException.BadRequest(EnumErrorCode.INVALID_PASSWORD);
+        }
     }
 }

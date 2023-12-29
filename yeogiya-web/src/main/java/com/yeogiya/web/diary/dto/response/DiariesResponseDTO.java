@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class DiariesResponseDTO {
     private String openYn;
     private Double star;
 
-    private LocalDateTime date;
+    private LocalDate date;
     private String diaryImage;
 
 
@@ -36,7 +37,7 @@ public class DiariesResponseDTO {
         this.openYn=diary.getOpenYn().toString();
         this.memberId = diary.getMember().getMemberId();
         this.star = diary.getStar();
-        this.date = diary.getCreatedAt();
+        this.date = diary.getDate();
 
         this.diaryImage = diary.getDiaryImages().stream()
                 .map(DiaryImage::getPath)

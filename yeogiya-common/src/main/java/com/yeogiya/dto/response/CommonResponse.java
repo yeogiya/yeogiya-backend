@@ -1,9 +1,11 @@
 package com.yeogiya.dto.response;
 
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@SuperBuilder
 public class CommonResponse<T> {
 
     private HttpStatus status;

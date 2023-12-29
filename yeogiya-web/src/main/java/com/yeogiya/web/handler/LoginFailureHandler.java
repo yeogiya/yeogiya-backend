@@ -27,7 +27,13 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
-        ErrorResponse errorResponse = ErrorResponse.of(new ClientException.Unauthorized(EnumErrorCode.LOGIN_FAILED));
+        ErrorResponse errorResponse;
+
+        if (exception.getCause() instanceof ClientException.BadRequest) {
+            errorResponse = ErrorResponse.of(new ClientException.BadRequest(EnumErrorCode.INVALID_MEMBER_STATUS));
+        } else {
+            errorResponse = ErrorResponse.of(new ClientException.Unauthorized(EnumErrorCode.LOGIN_FAILED));
+        }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setCharacterEncoding("UTF-8");

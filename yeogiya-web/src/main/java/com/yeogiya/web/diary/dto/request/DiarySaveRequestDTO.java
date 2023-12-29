@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.joda.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
@@ -21,6 +23,8 @@ public class DiarySaveRequestDTO {
     private OpenYn openYn;
     private Double star;
 
+    private LocalDate date;
+
     private List<String> hashtags;
 
     public Diary toEntity(Member member) {
@@ -29,6 +33,7 @@ public class DiarySaveRequestDTO {
                 .openYn(openYn)
                 .star(star)
                 .member(member)
+                .date(date)
                 .build();
     }
 

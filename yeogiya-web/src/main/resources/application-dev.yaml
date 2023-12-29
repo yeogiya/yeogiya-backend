@@ -32,7 +32,7 @@ spring:
             scope: profile_nickname, profile_image, account_email
             client-name: kakao
             authorization-grant-type: authorization_code
-            redirect-uri: "http://dev.yeogiya.shop:8080/login/oauth2/code/kakao"
+            redirect-uri: http://dev.yeogiya.shop:8080/login/oauth2/code/kakao
             client-authentication-method: POST
 
         provider:
@@ -65,7 +65,7 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: trace
-  config: classpath:logback-spring.xml
+  config: classpath:logback/logback-${spring.profiles.active}.xml
 
 # encryption
 jasypt:
@@ -114,5 +114,15 @@ cloud:
     stack:
       auto: false
 
+search:
+  kakao:
+    api-key: ENC(hHJyHogUIznjr5Kw5r/ZMUQOweOyJCDPzOjjuNWi5sHE3ID5VeivdhNmMTUstshG4OeOr97pGh8=)
+    url: https://dapi.kakao.com/v2/local/search/keyword.json
+  google:
+    url: https://maps.googleapis.com/maps/api/place
+    api-key: ENC(KTkfLnWcyDQkF9aCtnqqPvScYKnpfvjOhRM8WD5yu07/yjEX19VfmWnwt8btz8fS)
 
-
+email:
+  password:
+    reset:
+      url: https://yeogiya.shop/reset

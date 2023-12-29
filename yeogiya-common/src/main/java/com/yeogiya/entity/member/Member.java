@@ -68,6 +68,12 @@ public class Member extends BaseTimeEntity {
     @Column(name = "withdrawal_at", columnDefinition = "DATETIME")
     private LocalDateTime withdrawalAt;
 
+    @Column(name = "withdrawal_reason", columnDefinition = "VARCHAR(255)")
+    private String withdrawalReason;
+
+    @Column(name = "withdrawal_reason_detail", columnDefinition = "VARCHAR(255)")
+    private String withdrawalReasonDetail;
+
     @Column(name = "is_open_area", columnDefinition = "CHAR(1)")
     private boolean isOpenArea;
 
@@ -93,11 +99,8 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(password);
     }
 
-    public void changeNickname(String nickname) {
+    public void modify(String nickname, String profileImg) {
         this.nickname = nickname;
-    }
-
-    public void changeProfileImg(String profileImg) {
         this.profileImg = profileImg;
     }
 
@@ -105,8 +108,18 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = null;
     }
 
-    public void withdraw() {
+    public void withdraw(String withdrawalReason, String withdrawalReasonDetail) {
         this.status = Status.N;
         this.withdrawalAt = LocalDateTime.now();
+        this.withdrawalReason = withdrawalReason;
+        this.withdrawalReasonDetail = withdrawalReasonDetail;
+    }
+
+    public boolean isWithdrawal() {
+        return this.status.equals(Status.N);
+    }
+
+    public boolean checkPassword(PasswordEncoder passwordEncoder, String password) {
+        return passwordEncoder.matches(password, this.password);
     }
 }
