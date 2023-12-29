@@ -18,9 +18,8 @@ public class ImageUploadService {
     @Transactional
     public String upload(MultipartFile multipartFile) {
         try {
-            String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-            return s3Uploader.upload(multipartFile, fileName);
-        } catch (IOException e) {
+            return s3Uploader.uploadFile(multipartFile);
+        } catch (Exception e) {
             throw new RuntimeException(e); // TODO: 추후 커스텀 에러로 변경
         }
     }
