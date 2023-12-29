@@ -61,7 +61,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         memberService.updateRefreshToken(member.getId(), refreshToken);
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8000/login/sns") // TODO: 추후 배포 URL로 수정
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8000/login/sns")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
