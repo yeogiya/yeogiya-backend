@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -52,11 +53,14 @@ public class GoogleTextSearchResponseDTO {
         }
 
         public PlaceSearchResponseDTO.PlaceInfo toPlaceInfo() {
+            String photoReference = ObjectUtils.isEmpty(photos) ? null : photos.get(0).getPhotoReference();
+
             return PlaceSearchResponseDTO.PlaceInfo.builder()
                     .address(formattedAddress.replace("대한민국 ", ""))
                     .placeName(name)
                     .googleRating(rating)
                     .googlePlaceId(placeId)
+                    .photoReference(photoReference)
                     .build();
         }
     }
