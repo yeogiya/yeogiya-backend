@@ -39,6 +39,9 @@ public class PlaceSearchResponseDTO {
 
         @Schema(description = "구글 장소 ID / 상세 정보 조회 시 사용")
         private String googlePlaceId;
+
+        @Schema(description = "구글 이미지 검색 시 photo_reference로 사용")
+        private String photoReference;
     }
 
 }
