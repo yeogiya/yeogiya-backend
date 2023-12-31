@@ -39,6 +39,9 @@ public class Diary extends BaseTimeEntity {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "thumb")
+    private String thumb;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
@@ -53,11 +56,16 @@ public class Diary extends BaseTimeEntity {
     @OneToOne(mappedBy = "diary", orphanRemoval = true)
     private DiaryPlace diaryPlace;
 
-    public void update(String content, OpenYn openYn, Double star, LocalDate date) {
+    public void addThumbnail(String thumb) {
+        this.thumb = thumb;
+    }
+
+    public void update(String content, OpenYn openYn, Double star, LocalDate date, String thumb) {
         this.content = content;
         this.openYn = openYn;
         this.star = star;
         this.date = date;
+        this.thumb = thumb;
     }
 
 
