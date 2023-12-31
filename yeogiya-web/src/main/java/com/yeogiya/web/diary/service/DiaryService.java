@@ -14,6 +14,7 @@ import com.yeogiya.web.diary.dto.response.DiariesResponseDTO;
 import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
 import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
+import com.yeogiya.web.image.ImageUploadService;
 import com.yeogiya.web.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,8 @@ public class DiaryService {
     private final DiaryImageRepository diaryImageRepository;
 
     private final DiaryImageService diaryImageService;
+
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
@@ -70,7 +73,10 @@ public class DiaryService {
 
         // 이미지 저장 로직
         List<DiaryImage> diaryImages = new ArrayList<>();
+        String thumbPath = "";
         if (multipartFiles != null){
+           thumbPath = imageUploadService.uploadThumb(multipartFiles.get(0));
+            diary.addThumbnail(thumbPath);
             for (MultipartFile m : multipartFiles) {
                 DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
                 diaryImages.add(imageFileUpload);
@@ -134,6 +140,10 @@ public class DiaryService {
 
         // 이미지
         diaryImageRepository.deleteByDiaryId(diaryId);
+        String thumbPath = "";
+        if (multipartFiles != null) {
+            thumbPath = imageUploadService.uploadThumb(multipartFiles.get(0));
+        }
         for (MultipartFile m : multipartFiles) {
             DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
         }
@@ -154,7 +164,7 @@ public class DiaryService {
         diaryPlace.update(place);
 
 
-        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar(), diaryModifyRequestDTO.getDate());
+        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar(), diaryModifyRequestDTO.getDate(), thumbPath);
 
 
         return DiaryIdResponseDTO.builder()

@@ -39,4 +39,5 @@ public class DiaryImageService {
         return diaryImage;
 
     }
+
 }

@@ -31,13 +31,14 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;
 
-    public String uploadFile(MultipartFile file){
+    public String uploadFile(MultipartFile file, String serverFileName){
 
 
-        String fileName = imageDirName + "/" + createFileName(file.getOriginalFilename());
+        String fileName = imageDirName + "/" + serverFileName;
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentDisposition("inline");
 
         try(InputStream inputStream = file.getInputStream()){
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)

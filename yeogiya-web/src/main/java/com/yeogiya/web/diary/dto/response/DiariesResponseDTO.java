@@ -39,10 +39,7 @@ public class DiariesResponseDTO {
         this.star = diary.getStar();
         this.date = diary.getDate();
 
-        this.diaryImage = diary.getDiaryImages().stream()
-                .map(DiaryImage::getPath)
-            .findFirst()
-            .orElse("Not");
+        this.diaryImage = diary.getThumb();
 
         this.placeName = diary.getDiaryPlace().getPlace().getName();
 
