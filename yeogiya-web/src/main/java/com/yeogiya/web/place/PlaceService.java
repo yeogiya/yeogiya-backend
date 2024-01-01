@@ -15,4 +15,9 @@ public class PlaceService {
         return placeRepository.findByAddressContainsOrNameContains(address, name)
                 .orElse(null);
     }
+
+    public Place getPlaceByKakaoId(int kakaoId) {
+        return placeRepository.findByKakaoId(kakaoId)
+                .orElse(null);
+    }
 }

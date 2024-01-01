@@ -1,6 +1,8 @@
 package com.yeogiya.web.search.service;
 
+import com.yeogiya.entity.diary.Place;
 import com.yeogiya.web.diary.service.DiaryPlaceService;
+import com.yeogiya.web.place.PlaceService;
 import com.yeogiya.web.search.dto.response.KakaoPlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.PlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.SearchDetailsResponseDTO;
@@ -23,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class SearchService {
 
+    private final PlaceService placeService;
     private final DiaryPlaceService diaryPlaceService;
     private final GoogleSearchClient googleSearchClient;
     private final KakaoSearchClient kakaoSearchClient;
@@ -44,7 +47,7 @@ public class SearchService {
         GoogleTextSearchResponseDTO googleTextSearchResponseDTO = googleSearchClient.textSearch(googleApiKey, query, "ko", pageToken);
 
         List<PlaceSearchResponseDTO.PlaceInfo> places = googleTextSearchResponseDTO.getResults().stream()
-                .map(result -> result.toPlaceInfo(diaryPlaceService.getAvgRating(result.getFormattedAddress(), result.getName())))
+                .map(result -> result.toPlaceInfo(diaryPlaceService.getAvgRating(placeService.getPlaceByAddressAndName(result.getFormattedAddress(), result.getName()))))
                 .collect(toList());
 
         return PlaceSearchResponseDTO.builder()
@@ -102,6 +105,14 @@ public class SearchService {
                 page,
                 size);
 
-        return kakaoSearchResponseDTO.toKakaoSearchResponseDTO();
+        return KakaoPlaceSearchResponseDTO.builder()
+                .isEnd(kakaoSearchResponseDTO.getMeta().isEnd())
+                .places(kakaoSearchResponseDTO.getDocuments().stream()
+                        .map(document -> {
+                            Place place = placeService.getPlaceByKakaoId(Integer.parseInt(document.getId()));
+                            return document.toKakaoPlaceSearchResponseDTO(diaryPlaceService.getAvgRating(place));
+                        })
+                        .collect(toList()))
+                .build();
     }
 }

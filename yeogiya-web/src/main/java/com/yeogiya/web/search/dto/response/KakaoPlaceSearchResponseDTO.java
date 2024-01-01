@@ -34,5 +34,8 @@ public class KakaoPlaceSearchResponseDTO {
 
         @Schema(description = "경도(12x.xxx)")
         private Double lng;
+
+        @Schema(description = "여기야 자체 평점")
+        private Double yeogiyaRating;
     }
 }
