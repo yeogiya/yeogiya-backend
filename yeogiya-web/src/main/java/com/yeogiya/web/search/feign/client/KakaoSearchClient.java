@@ -15,5 +15,7 @@ public interface KakaoSearchClient {
             @RequestParam String query,
             @RequestParam Double x,
             @RequestParam Double y,
-            @RequestParam int radius);
+            @RequestParam int radius,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size);
 }

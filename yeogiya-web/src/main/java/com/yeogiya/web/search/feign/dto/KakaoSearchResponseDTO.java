@@ -1,6 +1,7 @@
 package com.yeogiya.web.search.feign.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yeogiya.web.search.dto.response.KakaoPlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.SearchDetailsResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,15 @@ public class KakaoSearchResponseDTO {
         }
 
         return result.get(0);
+    }
+
+    public KakaoPlaceSearchResponseDTO toKakaoSearchResponseDTO() {
+        return KakaoPlaceSearchResponseDTO.builder()
+                .isEnd(meta.isEnd())
+                .places(documents.stream()
+                        .map(Document::toKakaoPlaceSearchResponseDTO)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Getter
@@ -108,6 +118,16 @@ public class KakaoSearchResponseDTO {
 
         public boolean isCorrect(String googleLat, String googleLng) {
             return x.contains(googleLng) && y.contains(googleLat);
+        }
+
+        public KakaoPlaceSearchResponseDTO.Place toKakaoPlaceSearchResponseDTO() {
+            return KakaoPlaceSearchResponseDTO.Place.builder()
+                    .kakaoId(Integer.parseInt(id))
+                    .name(placeName)
+                    .address(addressName)
+                    .lat(Double.parseDouble(y))
+                    .lng(Double.parseDouble(x))
+                    .build();
         }
     }
 }

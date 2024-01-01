@@ -1,6 +1,7 @@
 package com.yeogiya.web.search.service;
 
 import com.yeogiya.web.diary.service.DiaryPlaceService;
+import com.yeogiya.web.search.dto.response.KakaoPlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.PlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.SearchDetailsResponseDTO;
 import com.yeogiya.web.search.feign.client.GoogleSearchClient;
@@ -84,8 +85,23 @@ public class SearchService {
                 keyword,
                 googleLng,
                 googleLat,
-                1000);
+                100,
+                1,
+                15);
 
         return kakaoSearchResponseDTO.toKakaoResult(lat, lng);
+    }
+
+    public KakaoPlaceSearchResponseDTO searchByKakao(Double lat, Double lng, String keyword, Integer page, Integer size) {
+        KakaoSearchResponseDTO kakaoSearchResponseDTO = kakaoSearchClient.searchPlaceByKeyword(
+                kakaoApiKey,
+                keyword,
+                lng,
+                lat,
+                100,
+                page,
+                size);
+
+        return kakaoSearchResponseDTO.toKakaoSearchResponseDTO();
     }
 }
