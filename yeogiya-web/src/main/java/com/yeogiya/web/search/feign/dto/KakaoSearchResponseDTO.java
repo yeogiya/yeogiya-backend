@@ -36,15 +36,6 @@ public class KakaoSearchResponseDTO {
         return result.get(0);
     }
 
-    public KakaoPlaceSearchResponseDTO toKakaoSearchResponseDTO() {
-        return KakaoPlaceSearchResponseDTO.builder()
-                .isEnd(meta.isEnd())
-                .places(documents.stream()
-                        .map(Document::toKakaoPlaceSearchResponseDTO)
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
     @Getter
     @Setter
     @NoArgsConstructor
@@ -120,13 +111,14 @@ public class KakaoSearchResponseDTO {
             return x.contains(googleLng) && y.contains(googleLat);
         }
 
-        public KakaoPlaceSearchResponseDTO.Place toKakaoPlaceSearchResponseDTO() {
+        public KakaoPlaceSearchResponseDTO.Place toKakaoPlaceSearchResponseDTO(Double yeogiyaRating) {
             return KakaoPlaceSearchResponseDTO.Place.builder()
                     .kakaoId(Integer.parseInt(id))
                     .name(placeName)
                     .address(addressName)
                     .lat(Double.parseDouble(y))
                     .lng(Double.parseDouble(x))
+                    .yeogiyaRating(yeogiyaRating)
                     .build();
         }
     }

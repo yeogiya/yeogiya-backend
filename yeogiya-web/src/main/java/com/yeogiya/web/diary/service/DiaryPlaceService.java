@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DiaryPlaceService {
 
-    private final PlaceService placeService;
-
-    public Double getAvgRating(String address, String name) {
-        Place place = placeService.getPlaceByAddressAndName(address, name);
+    public Double getAvgRating(Place place) {
         if (place == null) {
             return null;
         }
