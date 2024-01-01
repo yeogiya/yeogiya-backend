@@ -23,7 +23,7 @@ public class SearchController implements SearchSwagger {
     public CommonResponse<PlaceSearchResponseDTO> searchPlaceByKeyword(@RequestParam String keyword,
                                                                        @RequestParam(required = false) String pageToken) {
 
-        PlaceSearchResponseDTO responseDTO = searchService.searchPlacesByKeyword(keyword, "ko", pageToken);
+        PlaceSearchResponseDTO responseDTO = searchService.searchPlacesByKeyword(keyword, pageToken);
 
         return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }

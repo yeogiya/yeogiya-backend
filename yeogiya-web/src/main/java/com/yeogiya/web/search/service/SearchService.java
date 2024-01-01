@@ -39,8 +39,8 @@ public class SearchService {
     @Value("${search.google.api-key}")
     private String googleApiKey;
 
-    public PlaceSearchResponseDTO searchPlacesByKeyword(String query, String language, String pageToken) {
-        GoogleTextSearchResponseDTO googleTextSearchResponseDTO = googleSearchClient.textSearch(googleApiKey, query, language, pageToken);
+    public PlaceSearchResponseDTO searchPlacesByKeyword(String query, String pageToken) {
+        GoogleTextSearchResponseDTO googleTextSearchResponseDTO = googleSearchClient.textSearch(googleApiKey, query, "ko", pageToken);
 
         List<PlaceSearchResponseDTO.PlaceInfo> places = googleTextSearchResponseDTO.getResults().stream()
                 .map(result -> result.toPlaceInfo(diaryPlaceService.getAvgRating(result.getFormattedAddress(), result.getName())))
