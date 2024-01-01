@@ -42,6 +42,10 @@ public class GoogleTextSearchResponseDTO {
         @JsonProperty("user_ratings_total")
         private int userRatingsTotal;
 
+        public String getFormattedAddress() {
+            return formattedAddress.replace("대한민국 ", "");
+        }
+
         @Getter
         @Setter
         @NoArgsConstructor
@@ -52,7 +56,7 @@ public class GoogleTextSearchResponseDTO {
             private String photoReference;
         }
 
-        public PlaceSearchResponseDTO.PlaceInfo toPlaceInfo() {
+        public PlaceSearchResponseDTO.PlaceInfo toPlaceInfo(Double yeogiyaRating) {
             String photoReference = ObjectUtils.isEmpty(photos) ? null : photos.get(0).getPhotoReference();
 
             return PlaceSearchResponseDTO.PlaceInfo.builder()
@@ -60,6 +64,7 @@ public class GoogleTextSearchResponseDTO {
                     .placeName(name)
                     .googleRating(rating)
                     .googlePlaceId(placeId)
+                    .yeogiyaRating(yeogiyaRating)
                     .photoReference(photoReference)
                     .build();
         }
