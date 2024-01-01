@@ -67,7 +67,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         memberService.updateRefreshToken(member.getId(), refreshToken);
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8000/login/sns")
+        String redirectUrl = UriComponentsBuilder.fromUriString("https://yeogiya.shop/login/sns")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
