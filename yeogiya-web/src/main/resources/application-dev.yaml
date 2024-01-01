@@ -32,7 +32,7 @@ spring:
             scope: profile_nickname, profile_image, account_email
             client-name: kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://dev.yeogiya.shop:8080/login/oauth2/code/kakao
+            redirect-uri: https://dev.yeogiya.shop/login/oauth2/code/kakao
             client-authentication-method: POST
 
         provider:
