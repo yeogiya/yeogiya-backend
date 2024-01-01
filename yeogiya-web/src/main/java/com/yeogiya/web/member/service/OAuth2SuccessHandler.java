@@ -44,7 +44,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         memberService.getByEmail(userProfile.getEmail()).ifPresentOrElse(
                 existingUser -> {
                     if (!existingUser.getLoginType().equals(loginType)) {
-                        throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_EMAIL);
+                        try {
+                            log.info("이미 존재하는 이메일로 다른 소셜 로그인 시도");
+                            getRedirectStrategy().sendRedirect(request, response, "http://localhost:8000/notfound/account");
+                            throw new ClientException.Conflict(EnumErrorCode.ALREADY_EXISTS_EMAIL);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 },
                 () -> {
@@ -61,7 +67,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         memberService.updateRefreshToken(member.getId(), refreshToken);
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8000/login/sns")
+        String redirectUrl = UriComponentsBuilder.fromUriString("https://yeogiya.shop/login/sns")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build().toUriString();

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,6 +22,15 @@ public class YeogiyaExceptionHandler {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> handle(BaseException ex) {
         return new ResponseEntity<>(ErrorResponse.of(ex), ex.getHttpStatus());
+    }
+
+    @ExceptionHandler(ClientException.class)
+    public ResponseEntity<ErrorResponse> handle(ClientException ex, HttpServletResponse res) throws IOException {
+        if (ex.getResult() == EnumErrorCode.ALREADY_EXISTS_EMAIL.getResult()) {
+            res.sendRedirect("http://localhost:8000/notfound/account");
+        }
+
+        return handle(ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
