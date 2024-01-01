@@ -56,6 +56,14 @@ public class GooglePlaceDetailsSearchResponseDTO {
 
             private Location location;
 
+            public Double getLat() {
+                return location.getLat();
+            }
+
+            public Double getLng() {
+                return location.getLng();
+            }
+
             @Getter
             @Setter
             @NoArgsConstructor
@@ -73,8 +81,6 @@ public class GooglePlaceDetailsSearchResponseDTO {
                     .address(formattedAddress.replace("대한민국 ", ""))
                     .operatingHours(currentOpeningHours == null || currentOpeningHours.getWeekdayText() == null ? null : currentOpeningHours.getWeekdayText())
                     .phone(formattedPhoneNumber)
-                    .lat(geometry.getLocation().getLat())
-                    .lng(geometry.getLocation().getLng())
                     .build();
         }
     }

@@ -13,6 +13,7 @@ public interface KakaoSearchClient {
     KakaoSearchResponseDTO searchPlaceByKeyword(
             @RequestHeader String Authorization,
             @RequestParam String query,
-            @RequestParam int page,
-            @RequestParam int size);
+            @RequestParam Double x,
+            @RequestParam Double y,
+            @RequestParam int radius);
 }

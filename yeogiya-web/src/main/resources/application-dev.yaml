@@ -115,6 +115,11 @@ cloud:
     stack:
       auto: false
 
+email:
+  password:
+    reset:
+      url: https://yeogiya.shop/reset
+
 search:
   kakao:
     api-key: ENC(hHJyHogUIznjr5Kw5r/ZMUQOweOyJCDPzOjjuNWi5sHE3ID5VeivdhNmMTUstshG4OeOr97pGh8=)
@@ -122,8 +127,7 @@ search:
   google:
     url: https://maps.googleapis.com/maps/api/place
     api-key: ENC(KTkfLnWcyDQkF9aCtnqqPvScYKnpfvjOhRM8WD5yu07/yjEX19VfmWnwt8btz8fS)
-
-email:
-  password:
-    reset:
-      url: https://yeogiya.shop/reset
+  naver:
+    url: https://openapi.naver.com/v1/search/local.json
+    client-id: ENC(CmVSby7PIrAWID2T1JfzWg9VABohe6986vPUdc5suGk=)
+    client-secret: ENC(WdRhP8hsSafwciqVnqdovRn9yvuzQlqV)

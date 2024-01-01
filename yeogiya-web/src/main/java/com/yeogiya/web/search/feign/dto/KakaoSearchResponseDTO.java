@@ -1,12 +1,15 @@
 package com.yeogiya.web.search.feign.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yeogiya.web.search.dto.response.SearchDetailsResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -16,6 +19,21 @@ public class KakaoSearchResponseDTO {
 
     private List<Document> documents;
     private Meta meta;
+
+    public SearchDetailsResponseDTO.KakaoResult toKakaoResult(String lat, String lng) {
+        List<SearchDetailsResponseDTO.KakaoResult> result = documents.stream()
+                .filter(document -> document.isCorrect(lat, lng))
+                .collect(Collectors.toList())
+                .stream()
+                .map(Document::toKakaoResult)
+                .collect(Collectors.toList());
+
+        if (ObjectUtils.isEmpty(result)) {
+            return null;
+        }
+
+        return result.get(0);
+    }
 
     @Getter
     @Setter
@@ -75,5 +93,21 @@ public class KakaoSearchResponseDTO {
 
         @JsonProperty("road_address_name")
         private String roadAddressName;
+
+        private String x;
+        private String y;
+
+        public SearchDetailsResponseDTO.KakaoResult toKakaoResult() {
+            return SearchDetailsResponseDTO.KakaoResult.builder()
+                    .name(placeName)
+                    .roadAddress(roadAddressName)
+                    .address(addressName)
+                    .phone(phone)
+                    .build();
+        }
+
+        public boolean isCorrect(String googleLat, String googleLng) {
+            return x.contains(googleLng) && y.contains(googleLat);
+        }
     }
 }
