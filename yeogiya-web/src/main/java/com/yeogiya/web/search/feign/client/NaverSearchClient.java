@@ -14,6 +14,5 @@ public interface NaverSearchClient {
             @RequestHeader(name = "X-Naver-Client-Id") String XNaverClientID,
             @RequestHeader(name = "X-Naver-Client-Secret") String XNaverClientSecret,
             @RequestParam String query,
-            @RequestParam(required = false) int display,
-            @RequestParam(required = false) int start);
+            @RequestParam(required = false) int display);
 }

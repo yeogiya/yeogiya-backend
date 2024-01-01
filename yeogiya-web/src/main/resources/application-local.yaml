@@ -89,13 +89,7 @@ springdoc:
       enabled: true
   cache:
     disabled: true
-search:
-  kakao:
-    api-key: ENC(hHJyHogUIznjr5Kw5r/ZMUQOweOyJCDPzOjjuNWi5sHE3ID5VeivdhNmMTUstshG4OeOr97pGh8=)
-    url: https://dapi.kakao.com/v2/local/search/keyword.json
-  google:
-    url: https://maps.googleapis.com/maps/api/place
-    api-key: ENC(KTkfLnWcyDQkF9aCtnqqPvScYKnpfvjOhRM8WD5yu07/yjEX19VfmWnwt8btz8fS)
+
 jwt:
   secretKey: sjdl129380dkjdkfjsl3993209
 
@@ -123,3 +117,15 @@ email:
   password:
     reset:
       url: http://localhost:8000/reset
+
+search:
+  kakao:
+    api-key: ENC(hHJyHogUIznjr5Kw5r/ZMUQOweOyJCDPzOjjuNWi5sHE3ID5VeivdhNmMTUstshG4OeOr97pGh8=)
+    url: https://dapi.kakao.com/v2/local/search/keyword.json
+  google:
+    url: https://maps.googleapis.com/maps/api/place
+    api-key: ENC(KTkfLnWcyDQkF9aCtnqqPvScYKnpfvjOhRM8WD5yu07/yjEX19VfmWnwt8btz8fS)
+  naver:
+    url: https://openapi.naver.com/v1/search/local.json
+    client-id: ENC(CmVSby7PIrAWID2T1JfzWg9VABohe6986vPUdc5suGk=)
+    client-secret: ENC(WdRhP8hsSafwciqVnqdovRn9yvuzQlqV)
