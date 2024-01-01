@@ -1,5 +1,6 @@
 package com.yeogiya.web.search.feign.client;
 
+import com.yeogiya.web.search.feign.dto.GooglePlaceDetailsSearchResponseDTO;
 import com.yeogiya.web.search.feign.dto.GoogleTextSearchResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +15,12 @@ public interface GoogleSearchClient {
             @RequestParam String query,
             @RequestParam String language,
             @RequestParam(required = false, name = "pagetoken") String pageToken
+    );
+
+    @GetMapping("/details/json")
+    GooglePlaceDetailsSearchResponseDTO placeDetails(
+            @RequestParam String key,
+            @RequestParam(name = "place_id") String placeId,
+            @RequestParam String language
     );
 }
