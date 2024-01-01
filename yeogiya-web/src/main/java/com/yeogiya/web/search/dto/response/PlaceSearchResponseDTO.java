@@ -42,6 +42,9 @@ public class PlaceSearchResponseDTO {
 
         @Schema(description = "구글 이미지 검색 시 photo_reference로 사용")
         private String photoReference;
+
+        @Schema(description = "여기야 평점")
+        private Double yeogiyaRating;
     }
 
 }

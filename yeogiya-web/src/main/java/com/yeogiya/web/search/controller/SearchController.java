@@ -2,6 +2,7 @@ package com.yeogiya.web.search.controller;
 
 import com.yeogiya.dto.response.CommonResponse;
 import com.yeogiya.web.search.dto.response.PlaceSearchResponseDTO;
+import com.yeogiya.web.search.dto.response.SearchDetailsResponseDTO;
 import com.yeogiya.web.search.service.SearchService;
 import com.yeogiya.web.search.swagger.SearchSwagger;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,15 @@ public class SearchController implements SearchSwagger {
                                                                        @RequestParam(required = false) String pageToken) {
 
         PlaceSearchResponseDTO responseDTO = searchService.searchPlacesByKeyword(keyword, "ko", pageToken);
+
+        return new CommonResponse<>(HttpStatus.OK, responseDTO);
+    }
+
+    @GetMapping("/places/details")
+    public CommonResponse<SearchDetailsResponseDTO> searchDetails(@RequestParam String placeId,
+                                                                  @RequestParam String keyword) {
+
+        SearchDetailsResponseDTO responseDTO = searchService.searchPlaceDetails(placeId, "ko", keyword);
 
         return new CommonResponse<>(HttpStatus.OK, responseDTO);
     }
