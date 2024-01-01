@@ -26,13 +26,14 @@ spring:
             scope:
               - email
               - profile
+            redirect-uri: https://dev.yeogiya.shop/login/oauth2/code/google
           kakao:
             client-id: ENC(HY53Di2j0w8RlheCI50P8jIr5q/DnkQFlSh3VQ+iB2kfZOcDCSBadIgetvJKfOFH)
             client-secret: ENC(XWbQ4c9OjaJpnuAvlaw5OgS2mWNUzzFlG2xQHNVhN6m1Bq/aHCGgLtV7bSdoL+aQ)
             scope: profile_nickname, profile_image, account_email
             client-name: kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://dev.yeogiya.shop:8080/login/oauth2/code/kakao
+            redirect-uri: https://dev.yeogiya.shop/login/oauth2/code/kakao
             client-authentication-method: POST
 
         provider:
