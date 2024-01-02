@@ -111,7 +111,7 @@ public class KakaoSearchResponseDTO {
             return x.contains(googleLng) && y.contains(googleLat);
         }
 
-        public KakaoPlaceSearchResponseDTO.Place toKakaoPlaceSearchResponseDTO(Double yeogiyaRating) {
+        public KakaoPlaceSearchResponseDTO.Place toKakaoPlaceSearchResponseDTO(Double yeogiyaRating, String imageUrl) {
             return KakaoPlaceSearchResponseDTO.Place.builder()
                     .kakaoId(Integer.parseInt(id))
                     .name(placeName)
@@ -119,6 +119,7 @@ public class KakaoSearchResponseDTO {
                     .lat(Double.parseDouble(y))
                     .lng(Double.parseDouble(x))
                     .yeogiyaRating(yeogiyaRating)
+                    .imageUrl(imageUrl)
                     .build();
         }
     }

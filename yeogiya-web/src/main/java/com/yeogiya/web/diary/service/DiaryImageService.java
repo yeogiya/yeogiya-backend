@@ -10,9 +10,11 @@ import com.yeogiya.web.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,7 +39,15 @@ public class DiaryImageService {
         DiaryImage diaryImage = diaryImageRepository.save(diaryImageRequestDto.toEntity(diary));
 
         return diaryImage;
-
     }
 
+    public DiaryImage getByDiaryId(List<Long> diaryIds) {
+        List<DiaryImage> diaryImages = diaryImageRepository.findByDiaryIdInOrderByIdDesc(diaryIds);
+
+        if (ObjectUtils.isEmpty(diaryImages)) {
+            return null;
+        }
+
+        return diaryImages.get(0);
+    }
 }

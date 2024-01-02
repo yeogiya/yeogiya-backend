@@ -3,7 +3,7 @@ package com.yeogiya.web.diary.service;
 import com.yeogiya.entity.diary.Diary;
 import com.yeogiya.entity.diary.DiaryPlace;
 import com.yeogiya.entity.diary.Place;
-import com.yeogiya.web.place.PlaceService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
