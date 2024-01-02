@@ -37,5 +37,8 @@ public class KakaoPlaceSearchResponseDTO {
 
         @Schema(description = "여기야 자체 평점")
         private Double yeogiyaRating;
+
+        @Schema(description = "이미지 URL")
+        private String imageUrl;
     }
 }

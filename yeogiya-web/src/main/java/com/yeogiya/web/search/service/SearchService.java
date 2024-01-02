@@ -1,6 +1,8 @@
 package com.yeogiya.web.search.service;
 
+import com.yeogiya.entity.diary.DiaryImage;
 import com.yeogiya.entity.diary.Place;
+import com.yeogiya.web.diary.service.DiaryImageService;
 import com.yeogiya.web.diary.service.DiaryPlaceService;
 import com.yeogiya.web.place.PlaceService;
 import com.yeogiya.web.search.dto.response.KakaoPlaceSearchResponseDTO;
@@ -30,6 +32,7 @@ public class SearchService {
     private final GoogleSearchClient googleSearchClient;
     private final KakaoSearchClient kakaoSearchClient;
     private final NaverSearchClient naverSearchClient;
+    private final DiaryImageService diaryImageService;
 
     @Value("${search.kakao.api-key}")
     private String kakaoApiKey;
@@ -110,7 +113,14 @@ public class SearchService {
                 .places(kakaoSearchResponseDTO.getDocuments().stream()
                         .map(document -> {
                             Place place = placeService.getPlaceByKakaoId(Integer.parseInt(document.getId()));
-                            return document.toKakaoPlaceSearchResponseDTO(diaryPlaceService.getAvgRating(place));
+                            // TODO: place null 처리
+
+                            List<Long> diaryIds = place.getDiaryPlaces().stream()
+                                    .map(diaryPlace -> diaryPlace.getDiary().getId())
+                                    .collect(toList());
+                            DiaryImage diaryImage = diaryImageService.getByDiaryId(diaryIds);
+                            String imageUrl = diaryImage == null ? null : diaryImage.getPath();
+                            return document.toKakaoPlaceSearchResponseDTO(diaryPlaceService.getAvgRating(place), imageUrl);
                         })
                         .collect(toList()))
                 .build();
