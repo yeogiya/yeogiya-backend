@@ -18,6 +18,7 @@ import com.yeogiya.web.search.feign.dto.NaverLocalSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -108,21 +109,26 @@ public class SearchService {
                 page,
                 size);
 
+        List<KakaoPlaceSearchResponseDTO.Place> places = kakaoSearchResponseDTO.getDocuments().stream()
+                .map(document -> {
+                    Place place = placeService.getPlaceByKakaoId(Integer.parseInt(document.getId()));
+
+                    if (place == null) {
+                        return document.toKakaoPlaceSearchResponseDTO(null, null);
+                    }
+
+                    List<Long> diaryIds = place.getDiaryPlaces().stream()
+                            .map(diaryPlace -> diaryPlace.getDiary().getId())
+                            .collect(toList());
+                    DiaryImage diaryImage = diaryImageService.getByDiaryId(diaryIds);
+                    String imageUrl = diaryImage == null ? null : diaryImage.getPath();
+                    return document.toKakaoPlaceSearchResponseDTO(diaryPlaceService.getAvgRating(place), imageUrl);
+                })
+                .collect(toList());
+
         return KakaoPlaceSearchResponseDTO.builder()
                 .isEnd(kakaoSearchResponseDTO.getMeta().isEnd())
-                .places(kakaoSearchResponseDTO.getDocuments().stream()
-                        .map(document -> {
-                            Place place = placeService.getPlaceByKakaoId(Integer.parseInt(document.getId()));
-                            // TODO: place null 처리
-
-                            List<Long> diaryIds = place.getDiaryPlaces().stream()
-                                    .map(diaryPlace -> diaryPlace.getDiary().getId())
-                                    .collect(toList());
-                            DiaryImage diaryImage = diaryImageService.getByDiaryId(diaryIds);
-                            String imageUrl = diaryImage == null ? null : diaryImage.getPath();
-                            return document.toKakaoPlaceSearchResponseDTO(diaryPlaceService.getAvgRating(place), imageUrl);
-                        })
-                        .collect(toList()))
+                .places(places)
                 .build();
     }
 }
