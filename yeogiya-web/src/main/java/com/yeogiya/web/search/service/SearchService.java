@@ -2,8 +2,10 @@ package com.yeogiya.web.search.service;
 
 import com.yeogiya.entity.diary.DiaryImage;
 import com.yeogiya.entity.diary.Place;
+import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.diary.service.DiaryImageService;
 import com.yeogiya.web.diary.service.DiaryPlaceService;
+import com.yeogiya.web.diary.service.DiaryService;
 import com.yeogiya.web.place.PlaceService;
 import com.yeogiya.web.search.dto.response.KakaoPlaceSearchResponseDTO;
 import com.yeogiya.web.search.dto.response.PlaceSearchResponseDTO;
@@ -34,6 +36,7 @@ public class SearchService {
     private final KakaoSearchClient kakaoSearchClient;
     private final NaverSearchClient naverSearchClient;
     private final DiaryImageService diaryImageService;
+    private final DiaryService diaryService;
 
     @Value("${search.kakao.api-key}")
     private String kakaoApiKey;
@@ -76,6 +79,8 @@ public class SearchService {
             category = naverResult.getCategory();
         }
 
+        List<DiaryResponseDTO> diaries = diaryService.getDiariesByPlaceKakaoId(kakaoResult.getKakaoId());
+
         return SearchDetailsResponseDTO.builder()
                 .lat(lat)
                 .lng(lng)
@@ -83,6 +88,7 @@ public class SearchService {
                 .naver(naverResult)
                 .kakao(kakaoResult)
                 .category(category)
+                .diaries(diaries)
                 .build();
     }
 

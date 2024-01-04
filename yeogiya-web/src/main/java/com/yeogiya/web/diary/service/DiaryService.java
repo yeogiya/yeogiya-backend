@@ -15,6 +15,7 @@ import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
 import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.image.ImageUploadService;
+import com.yeogiya.web.place.PlaceService;
 import com.yeogiya.web.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,8 @@ public class DiaryService {
     private final DiaryPlaceRepository diaryPlaceRepository;
     private final PlaceRepository placeRepository;
     private final DiaryImageRepository diaryImageRepository;
+    private final DiaryPlaceService diaryPlaceService;
+    private final PlaceService placeService;
 
     private final DiaryImageService diaryImageService;
 
@@ -225,4 +228,13 @@ public class DiaryService {
         }
     }
 
+    public List<DiaryResponseDTO> getDiariesByPlaceKakaoId(Integer kakaoId) {
+        List<Long> diaryIds = diaryPlaceService.getDiaryPlaceByPlaceId(placeService.getPlaceByKakaoId(kakaoId).getId()).stream()
+                .map(diaryPlace -> diaryPlace.getDiary().getId())
+                .collect(Collectors.toList());
+
+        return diaryRepository.findAllByIdInOrderByIdDesc(diaryIds).stream()
+                .map(DiaryResponseDTO::new)
+                .collect(Collectors.toList());
+    }
 }

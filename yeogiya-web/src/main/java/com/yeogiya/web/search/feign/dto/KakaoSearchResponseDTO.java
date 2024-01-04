@@ -100,6 +100,7 @@ public class KakaoSearchResponseDTO {
 
         public SearchDetailsResponseDTO.KakaoResult toKakaoResult() {
             return SearchDetailsResponseDTO.KakaoResult.builder()
+                    .kakaoId(Integer.parseInt(id))
                     .name(placeName)
                     .roadAddress(roadAddressName)
                     .address(addressName)
