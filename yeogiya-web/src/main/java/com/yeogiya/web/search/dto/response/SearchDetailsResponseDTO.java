@@ -1,5 +1,6 @@
 package com.yeogiya.web.search.dto.response;
 
+import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,9 @@ public class SearchDetailsResponseDTO {
 
     @Schema(description = "카카오 검색 결과")
     private KakaoResult kakao;
+
+    @Schema(description = "장소에 대한 다이어리 리스트")
+    private List<DiaryResponseDTO> diaries;
 
     @Getter
     @Builder
@@ -67,6 +71,7 @@ public class SearchDetailsResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class KakaoResult {
+        private Integer kakaoId;
         private String name;
         private String roadAddress;
         private String address;

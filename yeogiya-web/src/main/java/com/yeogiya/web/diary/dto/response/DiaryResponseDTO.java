@@ -23,6 +23,7 @@ public class DiaryResponseDTO {
 
     private Long diaryId;
     private Long memberId;
+    private String memberNickname;
     private String placeName;
     private String content;
     private String openYn;
@@ -33,11 +34,12 @@ public class DiaryResponseDTO {
     private List<String> diaryImages;
     private List<String> hashtags;
 
-    public DiaryResponseDTO(Diary diary){
+    public DiaryResponseDTO(Diary diary) {
         this.diaryId = diary.getId();
-        this.content=diary.getContent();
-        this.openYn=diary.getOpenYn().toString();
+        this.content = diary.getContent();
+        this.openYn = diary.getOpenYn().toString();
         this.memberId = diary.getMember().getMemberId();
+        this.memberNickname = diary.getMember().getNickname();
         this.star = diary.getStar();
         this.date = diary.getDate();
 
@@ -51,8 +53,6 @@ public class DiaryResponseDTO {
                 .collect(Collectors.toList());
 
         this.placeName = diary.getDiaryPlace().getPlace().getName();
-
-
     }
 }
 
