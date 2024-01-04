@@ -104,6 +104,7 @@ public class KakaoSearchResponseDTO {
                     .roadAddress(roadAddressName)
                     .address(addressName)
                     .phone(phone)
+                    .category(categoryName)
                     .build();
         }
 

@@ -65,13 +65,24 @@ public class SearchService {
 
         Double lat = googlePlaceDetailsSearchResponseDTO.getResult().getGeometry().getLat();
         Double lng = googlePlaceDetailsSearchResponseDTO.getResult().getGeometry().getLng();
+        SearchDetailsResponseDTO.KakaoResult kakaoResult = getKakaoResult(lat, lng, keyword);
+        SearchDetailsResponseDTO.NaverResult naverResult = getNaverResult(lat, lng, keyword);
+        SearchDetailsResponseDTO.GoogleResult googleResult = googlePlaceDetailsSearchResponseDTO.getResult().toGoogleResult();
+
+        String category = null;
+        if (!ObjectUtils.isEmpty(kakaoResult) && kakaoResult.getCategory() != null) {
+            category = kakaoResult.getCategory();
+        } else if (!ObjectUtils.isEmpty(naverResult) && naverResult.getCategory() != null) {
+            category = naverResult.getCategory();
+        }
 
         return SearchDetailsResponseDTO.builder()
                 .lat(lat)
                 .lng(lng)
-                .google(googlePlaceDetailsSearchResponseDTO.getResult().toGoogleResult())
-                .naver(getNaverResult(lat, lng, keyword))
-                .kakao(getKakaoResult(lat, lng, keyword))
+                .google(googleResult)
+                .naver(naverResult)
+                .kakao(kakaoResult)
+                .category(category)
                 .build();
     }
 
