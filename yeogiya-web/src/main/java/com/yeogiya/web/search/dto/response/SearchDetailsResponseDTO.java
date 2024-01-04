@@ -56,6 +56,10 @@ public class SearchDetailsResponseDTO {
         private String roadAddress;
         private String address;
         private String category;
+
+        public String getCategory() {
+            return category.replace(">", " > ").replace(",", ", ");
+        }
     }
 
     @Getter
@@ -67,5 +71,6 @@ public class SearchDetailsResponseDTO {
         private String roadAddress;
         private String address;
         private String phone;
+        private String category;
     }
 }
