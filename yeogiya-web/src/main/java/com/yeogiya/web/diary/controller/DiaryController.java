@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public class DiaryController implements DiarySwagger {
 
     private final DiaryService diaryService;
 
-    @PostMapping(value = "/auth/v1.0.0/diaries")
+    @PostMapping(value = "/auth/v1.0.0/diaries", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<DiaryIdResponseDTO> postDiary(@RequestPart("diary") DiarySaveRequestDTO diary,
                                                         @RequestPart("place") PlaceRequestDTO place,
                                                         @RequestPart(value = "diaryImage", required = false)
@@ -40,7 +41,7 @@ public class DiaryController implements DiarySwagger {
         return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
     }
 
-    @PatchMapping("/auth/v1.0.0/diaries/{diaryId}")
+    @PatchMapping(value = "/auth/v1.0.0/diaries/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<DiaryIdResponseDTO> modifyDiary (@PathVariable Long diaryId,
                                                            @RequestPart("diary") DiaryModifyRequestDTO diary,
                                                            @RequestPart("place") PlaceRequestDTO place,
