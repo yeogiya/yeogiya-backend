@@ -7,6 +7,7 @@ import com.yeogiya.exception.ClientException;
 import com.yeogiya.repository.PasswordResetEmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class PasswordResetService {
             mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(member.getEmail()));
             mailMessage.setFrom("yeogiyaTeam");
             mailMessage.setSubject("[여기야] 비밀번호 재설정 안내");
-            mailMessage.setContent(createContents(member, token.getId().toString()), "text/html;charset=euc-kr");
+            mailMessage.setContent(createContents(member, String.valueOf(token.getId())), "text/html;charset=euc-kr");
         } catch (MessagingException e) {
             log.error("messaging error: {}", e.getMessage());
         }
@@ -48,8 +49,13 @@ public class PasswordResetService {
         javaMailSender.send(mailMessage);
     }
 
+    private String generateToken() {
+        return RandomStringUtils.randomNumeric(6);
+    }
+
     private PasswordResetEmailToken saveToken(Long memberId) {
         PasswordResetEmailToken token = PasswordResetEmailToken.builder()
+                .id(generateToken())
                 .memberId(memberId)
                 .expirationDateTime(LocalDateTime.now().plusMinutes(30))
                 .build();
@@ -68,11 +74,9 @@ public class PasswordResetService {
                 "<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>" +
                 "안녕하세요, 여기야 입니다.<br/>" +
                 "회원님의 계정(" + member.getEmail() + ")" +
-                " 비밀번호를 재설정하시려면 하단의 '비밀번호 재설정'을 클릭하세요." +
+                " 비밀번호를 재설정하시려면 하단의 인증번호를 입력하세요." +
                 "<br /><br />" +
-                "<a href=\"" +
-                resetUrl + "/" + token +
-                "\" target=\"_self\">비밀번호 재설정</a>" +
+                token +
                 "<br /><br />" +
                 "문의사항은 여기야 담당자 메일(yeogiya2023@gmail.com)로 연락 주시기 바랍니다.<br/>" +
                 "감사합니다." +
@@ -80,9 +84,7 @@ public class PasswordResetService {
     }
 
     public Long getMemberIdByToken(String token) {
-        UUID authToken = UUID.fromString(token);
-
-        PasswordResetEmailToken resetToken = repository.findByIdAndExpired(authToken, false)
+        PasswordResetEmailToken resetToken = repository.findByIdAndExpired(token, false)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PASSWORD_TOKEN));
 
         if (resetToken.isExpired()) {
@@ -94,9 +96,7 @@ public class PasswordResetService {
 
     @Transactional
     public void confirm(String token) {
-        UUID authToken = UUID.fromString(token);
-
-        PasswordResetEmailToken resetToken = repository.findByIdAndExpired(authToken, false)
+        PasswordResetEmailToken resetToken = repository.findByIdAndExpired(token, false)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PASSWORD_TOKEN));
 
         if (resetToken.isExpired()) {

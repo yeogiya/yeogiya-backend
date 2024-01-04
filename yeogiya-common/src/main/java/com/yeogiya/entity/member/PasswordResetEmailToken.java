@@ -19,9 +19,7 @@ import java.util.UUID;
 public class PasswordResetEmailToken extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    @Type(type = "uuid-char")
-    private UUID id;
+    private String id;
 
     @Column(name = "member_id")
     private Long memberId;
