@@ -117,6 +117,11 @@ public class SearchService {
     }
 
     public KakaoPlaceSearchResponseDTO searchByKakao(Double lat, Double lng, String keyword, Integer page, Integer size) {
+        if (lng == 126.9768 && lat == 37.5759) {
+            lng = null;
+            lat = null;
+        }
+
         KakaoSearchResponseDTO kakaoSearchResponseDTO = kakaoSearchClient.searchPlaceByKeyword(
                 kakaoApiKey,
                 keyword,
