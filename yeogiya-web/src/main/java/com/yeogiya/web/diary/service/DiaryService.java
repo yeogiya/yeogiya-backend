@@ -233,7 +233,7 @@ public class DiaryService {
                 .map(diaryPlace -> diaryPlace.getDiary().getId())
                 .collect(Collectors.toList());
 
-        return diaryRepository.findAllByIdInOrderByIdDesc(diaryIds).stream()
+        return diaryRepository.findAllByIdInAndOpenYnIsOrderByIdDesc(diaryIds, OpenYn.Y).stream()
                 .map(DiaryResponseDTO::new)
                 .collect(Collectors.toList());
     }
