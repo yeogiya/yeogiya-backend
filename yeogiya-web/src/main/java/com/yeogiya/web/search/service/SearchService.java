@@ -1,7 +1,6 @@
 package com.yeogiya.web.search.service;
 
-import com.yeogiya.entity.diary.DiaryImage;
-import com.yeogiya.entity.diary.Place;
+import com.yeogiya.entity.diary.*;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.diary.service.DiaryImageService;
 import com.yeogiya.web.diary.service.DiaryPlaceService;
@@ -140,7 +139,9 @@ public class SearchService {
                     }
 
                     List<Long> diaryIds = place.getDiaryPlaces().stream()
-                            .map(diaryPlace -> diaryPlace.getDiary().getId())
+                            .map(DiaryPlace::getDiary)
+                            .filter(diary -> (diary.getOpenYn() != null && diary.getOpenYn().equals(OpenYn.Y)))
+                            .map(Diary::getId)
                             .collect(toList());
                     DiaryImage diaryImage = diaryImageService.getByDiaryId(diaryIds);
                     String imageUrl = diaryImage == null ? null : diaryImage.getPath();
