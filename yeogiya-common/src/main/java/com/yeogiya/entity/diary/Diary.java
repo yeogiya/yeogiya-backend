@@ -4,6 +4,7 @@ import com.yeogiya.entity.BaseTimeEntity;
 import com.yeogiya.entity.member.Member;
 
 import lombok.*;
+import org.springframework.util.ObjectUtils;
 
 
 import javax.persistence.*;
@@ -61,16 +62,10 @@ public class Diary extends BaseTimeEntity {
     }
 
     public void update(String content, OpenYn openYn, Double star, LocalDate date, String thumb) {
-        this.content = content;
-        this.openYn = openYn;
-        this.star = star;
-        this.date = date;
-        this.thumb = thumb;
+        this.content = ObjectUtils.isEmpty(content) ? this.content : content;
+        this.openYn = ObjectUtils.isEmpty(openYn) ? this.openYn : openYn;
+        this.star = ObjectUtils.isEmpty(star) ? this.star : star;
+        this.date = ObjectUtils.isEmpty(date) ? this.date : date;
+        this.thumb = ObjectUtils.isEmpty(thumb) ? this.thumb : thumb;
     }
-
-
-
-
-
-
 }

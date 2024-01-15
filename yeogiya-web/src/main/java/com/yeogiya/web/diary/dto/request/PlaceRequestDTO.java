@@ -17,5 +17,13 @@ public class PlaceRequestDTO {
     private Double latitude;
     private Double longitude;
 
-
+    public Place toPlace() {
+        return Place.builder()
+                .name(name)
+                .address(address)
+                .kakaoId(kakaoId)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+    }
 }
