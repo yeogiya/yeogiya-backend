@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,19 +25,14 @@ public class DiaryImageService {
 
     private final ImageUploadService imageUploadService;
 
-    @Transactional
-    public DiaryImage upload(MultipartFile multipartFile, Diary diary) throws IOException {
-
-
+    private DiaryImage upload(MultipartFile multipartFile, Diary diary) throws IOException {
         String originalName = multipartFile.getOriginalFilename();
         String savedName = s3Uploader.createFileName(originalName);
         String path = imageUploadService.upload(multipartFile);
 
         DiaryImageRequestDTO diaryImageRequestDto = new DiaryImageRequestDTO(originalName, savedName, path);
 
-        DiaryImage diaryImage = diaryImageRepository.save(diaryImageRequestDto.toEntity(diary));
-
-        return diaryImage;
+        return diaryImageRepository.save(diaryImageRequestDto.toEntity(diary));
     }
 
     public DiaryImage getByDiaryId(List<Long> diaryIds) {
@@ -49,5 +43,27 @@ public class DiaryImageService {
         }
 
         return diaryImages.get(0);
+    }
+
+    public void register(List<MultipartFile> multipartFiles, Diary diary) throws IOException {
+        if (ObjectUtils.isEmpty(multipartFiles)) {
+            return;
+        }
+
+        String thumbPath = "";
+        thumbPath = imageUploadService.uploadThumbnail(multipartFiles.get(0));
+        diary.addThumbnail(thumbPath);
+        for (MultipartFile m : multipartFiles) {
+            upload(m, diary);
+        }
+    }
+
+    public String registerThumbnail(MultipartFile multipartFile) {
+        return imageUploadService.uploadThumbnail(multipartFile);
+    }
+
+    @Transactional
+    public void deleteByDiaryId(Long diaryId) {
+        diaryImageRepository.deleteByDiaryId(diaryId);
     }
 }

@@ -14,12 +14,12 @@ import com.yeogiya.web.diary.dto.response.DiariesResponseDTO;
 import com.yeogiya.web.diary.dto.response.DiaryIdResponseDTO;
 import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
-import com.yeogiya.web.image.ImageUploadService;
 import com.yeogiya.web.place.PlaceService;
 import com.yeogiya.web.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -34,18 +34,13 @@ import java.util.stream.Collectors;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
-    private final HashtagRepository hashtagRepository;
-    private final DiaryHashtagRepository diaryHashtagRepository;
     private final MemberRepository memberRepository;
-    private final DiaryPlaceRepository diaryPlaceRepository;
     private final PlaceRepository placeRepository;
-    private final DiaryImageRepository diaryImageRepository;
     private final DiaryPlaceService diaryPlaceService;
     private final PlaceService placeService;
 
     private final DiaryImageService diaryImageService;
-
-    private final ImageUploadService imageUploadService;
+    private final DiaryHashtagService diaryHashtagService;
 
     @Transactional
     public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
@@ -53,59 +48,23 @@ public class DiaryService {
                                         PrincipalDetails principal,
                                         List<MultipartFile> multipartFiles) throws IOException {
 
-        Member member = memberRepository.findById(principal.getUsername()).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findById(principal.getUsername())
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
         Diary diary = diarySaveRequestDTO.toEntity(member);
-
-        List<DiaryHashtag> diaryHashtags = new ArrayList<>();
-        List<String> tagStrings = diarySaveRequestDTO.getHashtags();
-
-        if(tagStrings.size() != 0) {
-            tagStrings.stream()
-                    .map(hashtag ->
-                            hashtagRepository.findByName(hashtag)
-                                    .orElseGet(() -> hashtagRepository.save(
-                                            Hashtag.builder()
-                                                    .name(hashtag)
-                                                    .build())))
-                    .forEach(hashtag -> {
-                            DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
-                            diaryHashtags.add(diaryHashtag);
-                            diaryHashtagRepository.save(diaryHashtag);
-                    });
-        }
-
-        // 이미지 저장 로직
-        List<DiaryImage> diaryImages = new ArrayList<>();
-        String thumbPath = "";
-        if (multipartFiles != null){
-           thumbPath = imageUploadService.uploadThumb(multipartFiles.get(0));
-            diary.addThumbnail(thumbPath);
-            for (MultipartFile m : multipartFiles) {
-                DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
-                diaryImages.add(imageFileUpload);
-            }
-        }
-
-        // 장소 저장 로직
-        int kakaoId = placeRequestDTO.getKakaoId();
-        placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
-                Place.builder()
-                .name(placeRequestDTO.getName())
-                .address(placeRequestDTO.getAddress())
-                .kakaoId(placeRequestDTO.getKakaoId())
-                .longitude(placeRequestDTO.getLongitude())
-                .latitude(placeRequestDTO.getLatitude())
-                .build()));
-
-        Place place = placeRepository.findByKakaoId(kakaoId)
-                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
-        DiaryPlace diaryPlace = new DiaryPlace(diary, place);
-        diaryPlaceRepository.save(diaryPlace);
-
-
-
         diaryRepository.save(diary);
 
+        diaryHashtagService.register(diarySaveRequestDTO.getHashtags(), diary);
+
+        // 이미지 저장 로직
+        String thumbnail = ObjectUtils.isEmpty(multipartFiles) ? "" : diaryImageService.registerThumbnail(multipartFiles.get(0));
+        diary.addThumbnail(thumbnail);
+        diaryImageService.register(multipartFiles, diary);
+
+        // 장소 저장 로직
+        Place place = placeRepository.findByKakaoId(placeRequestDTO.getKakaoId())
+                .orElseGet(() -> placeRepository.save(placeRequestDTO.toPlace()));
+
+        diaryPlaceService.register(diary, place);
 
         return DiaryIdResponseDTO.builder()
                 .id(diary.getId())
@@ -118,67 +77,38 @@ public class DiaryService {
                                           PlaceRequestDTO placeRequestDTO,
                                           PrincipalDetails principal,
                                           List<MultipartFile> multipartFiles) throws IOException {
-        Diary diary = diaryRepository.findById(diaryId).orElseThrow(
-                () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
-        );
 
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY));
         validateAccess(principal, diary);
+
         // 태그
-        diaryHashtagRepository.deleteByDiaryId(diaryId);
-        List<String> tagStrings = diaryModifyRequestDTO.getHashtags();
-        if (tagStrings.size() != 0) {
-            tagStrings.stream()
-                    .map(hashtag ->
-                            hashtagRepository.findByName(hashtag)
-                                    .orElseGet(() -> hashtagRepository.save(
-                                            Hashtag.builder()
-                                                    .name(hashtag)
-                                                    .build())))
-                    .forEach(hashtag -> {
-                        DiaryHashtag diaryHashtag = new DiaryHashtag(diary, hashtag);
-                        diaryHashtagRepository.save(diaryHashtag);
-                    });
+        diaryHashtagService.deleteByDiaryId(diaryId);
+        diaryHashtagService.register(diaryModifyRequestDTO.getHashtags(), diary);
+
+        String thumbnail = "";
+        // 이미지 있을 때만 수정되도록 처리
+        if (!ObjectUtils.isEmpty(multipartFiles)) {
+            diaryImageService.deleteByDiaryId(diaryId);
+            thumbnail = diaryImageService.registerThumbnail(multipartFiles.get(0));
+            diaryImageService.register(multipartFiles, diary);
         }
 
+        // 장소 저장 로직
+        Place place = placeRepository.findByKakaoId(placeRequestDTO.getKakaoId())
+                .orElseGet(() -> placeRepository.save(placeRequestDTO.toPlace()));
 
-        // 이미지
-        diaryImageRepository.deleteByDiaryId(diaryId);
-        String thumbPath = "";
-        if (multipartFiles != null) {
-            thumbPath = imageUploadService.uploadThumb(multipartFiles.get(0));
-        }
-        for (MultipartFile m : multipartFiles) {
-            DiaryImage imageFileUpload = diaryImageService.upload(m, diary);
-        }
-
-        // 장소
-        int kakaoId = placeRequestDTO.getKakaoId();
-        placeRepository.findByKakaoId(kakaoId).orElseGet(() -> placeRepository.save(
-                Place.builder()
-                        .name(placeRequestDTO.getName())
-                        .address(placeRequestDTO.getAddress())
-                        .kakaoId(placeRequestDTO.getKakaoId())
-                        .longitude(placeRequestDTO.getLongitude())
-                        .latitude(placeRequestDTO.getLatitude())
-                        .build()));
-
-        Place place = placeRepository.findByKakaoId(kakaoId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
-        DiaryPlace diaryPlace = diaryPlaceRepository.findByDiaryId(diaryId).orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_PLACE));
+        DiaryPlace diaryPlace = diaryPlaceService.getDiaryPlaceByDiaryId(diaryId);
         diaryPlace.update(place);
-
-
-        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar(), diaryModifyRequestDTO.getDate(), thumbPath);
-
+        diary.update(diaryModifyRequestDTO.getContent(), diaryModifyRequestDTO.getOpenYn(), diaryModifyRequestDTO.getStar(), diaryModifyRequestDTO.getDate(), thumbnail);
 
         return DiaryIdResponseDTO.builder()
                 .id(diaryId)
                 .build();
-
     }
 
     @Transactional
     public DiaryIdResponseDTO deleteDiary(Long diaryId, PrincipalDetails principal) {
-
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(
                 () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
         );
@@ -199,7 +129,6 @@ public class DiaryService {
 
     @Transactional
     public CalendarPageResponseDTO getDiaries(CalendarPageRequestDTO calendarPageRequestDTO, PrincipalDetails principal) {
-
         List<Diary> diaries = new ArrayList<>();
 
         // if(calendarPageRequestDTO.getDay()==0){  월별, 주간별 기능 추가되면 복구

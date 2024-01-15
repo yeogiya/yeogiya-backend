@@ -5,7 +5,6 @@ import com.yeogiya.web.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import marvin.image.MarvinImage;
 import org.marvinproject.image.transform.scale.Scale;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +44,7 @@ public class ImageUploadService {
     }
 
     @Transactional
-    public String uploadThumb(MultipartFile multipartFile) {
+    public String uploadThumbnail(MultipartFile multipartFile) {
         try {
             String serverFileName = createFileName(multipartFile.getOriginalFilename());
             String thumbnailFileName = getThumbnailFileName(serverFileName);
