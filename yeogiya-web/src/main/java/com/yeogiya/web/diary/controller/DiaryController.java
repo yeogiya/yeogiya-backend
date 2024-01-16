@@ -11,6 +11,7 @@ import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import com.yeogiya.web.diary.service.DiaryService;
 import com.yeogiya.web.diary.swagger.DiarySwagger;
+import com.yeogiya.web.util.MemberUtil;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -32,12 +35,12 @@ public class DiaryController implements DiarySwagger {
     private final DiaryService diaryService;
 
     @PostMapping(value = "/auth/v1.0.0/diaries", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CommonResponse<DiaryIdResponseDTO> postDiary(@RequestPart(name = "diary") DiarySaveRequestDTO diary,
+    public CommonResponse<DiaryIdResponseDTO> postDiary(@RequestPart(name = "diary") @Valid DiarySaveRequestDTO diary,
                                                         @RequestPart(name = "place") PlaceRequestDTO place,
                                                         @RequestPart(name = "diaryImage", required = false) List<MultipartFile> multipartFiles,
-                                                        @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
+                                                        @Parameter(hidden = true) Principal principal) throws IOException {
 
-        return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
+        return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, multipartFiles, MemberUtil.getMemberId(principal)));
     }
 
     @PatchMapping(value = "/auth/v1.0.0/diaries/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -46,14 +49,14 @@ public class DiaryController implements DiarySwagger {
                                                            @RequestPart(name = "place") PlaceRequestDTO place,
                                                            @RequestPart(name = "diaryImage", required = false)
                                                                        List<MultipartFile> multipartFiles,
-                                                           @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
+                                                           @Parameter(hidden = true) Principal principal) throws IOException {
 
-        return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, principal, multipartFiles));
+        return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, multipartFiles, MemberUtil.getMemberId(principal)));
     }
 
     @DeleteMapping("/auth/v1.0.0/diaries/{diaryId}")
-    public CommonResponse<DiaryIdResponseDTO> deleteDiary (@PathVariable Long diaryId, @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) {
-        return new CommonResponse<>(HttpStatus.OK, diaryService.deleteDiary(diaryId, principal));
+    public CommonResponse<DiaryIdResponseDTO> deleteDiary (@PathVariable Long diaryId, @Parameter(hidden = true) Principal principal) {
+        return new CommonResponse<>(HttpStatus.OK, diaryService.deleteDiary(diaryId, MemberUtil.getMemberId(principal)));
     }
 
     @GetMapping("/auth/v1.0.0/diaries/{diaryId}")

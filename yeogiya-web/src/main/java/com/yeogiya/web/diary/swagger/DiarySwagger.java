@@ -11,24 +11,23 @@ import com.yeogiya.web.diary.dto.request.PlaceRequestDTO;
 import com.yeogiya.web.diary.dto.response.DiaryResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "공간일기")
 public interface DiarySwagger {
 
     @Operation(summary = "공간일기 쓰기")
-    CommonResponse<DiaryIdResponseDTO> postDiary(DiarySaveRequestDTO diary, PlaceRequestDTO place, List<MultipartFile> multipartFiles, PrincipalDetails principal) throws IOException;
+    CommonResponse<DiaryIdResponseDTO> postDiary(DiarySaveRequestDTO diary, PlaceRequestDTO place, List<MultipartFile> multipartFiles, Principal principal) throws IOException;
 
     @Operation(summary = "공간일기 수정")
-    CommonResponse<DiaryIdResponseDTO> modifyDiary(Long diaryId, DiaryModifyRequestDTO diary, PlaceRequestDTO place, List<MultipartFile> multipartFiles, PrincipalDetails principal) throws IOException ;
+    CommonResponse<DiaryIdResponseDTO> modifyDiary(Long diaryId, DiaryModifyRequestDTO diary, PlaceRequestDTO place, List<MultipartFile> multipartFiles, Principal principal) throws IOException ;
 
     @Operation(summary = "공간일기 삭제")
-    CommonResponse<DiaryIdResponseDTO> deleteDiary(Long diaryId, PrincipalDetails principal);
+    CommonResponse<DiaryIdResponseDTO> deleteDiary(Long diaryId, Principal principal);
 
     @Operation(summary = "공간일기 뷰")
     CommonResponse<DiaryResponseDTO> getDiary(Long diaryId, PrincipalDetails principal);
