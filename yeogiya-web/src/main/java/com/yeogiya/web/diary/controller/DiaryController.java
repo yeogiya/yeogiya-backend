@@ -32,10 +32,9 @@ public class DiaryController implements DiarySwagger {
     private final DiaryService diaryService;
 
     @PostMapping(value = "/auth/v1.0.0/diaries", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CommonResponse<DiaryIdResponseDTO> postDiary(@RequestPart("diary") DiarySaveRequestDTO diary,
-                                                        @RequestPart("place") PlaceRequestDTO place,
-                                                        @RequestPart(value = "diaryImage", required = false)
-                                                            List<MultipartFile> multipartFiles,
+    public CommonResponse<DiaryIdResponseDTO> postDiary(@RequestPart(name = "diary") DiarySaveRequestDTO diary,
+                                                        @RequestPart(name = "place") PlaceRequestDTO place,
+                                                        @RequestPart(name = "diaryImage", required = false) List<MultipartFile> multipartFiles,
                                                         @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
 
         return new CommonResponse<>(HttpStatus.OK, diaryService.postDiary(diary, place, principal, multipartFiles));
@@ -43,14 +42,13 @@ public class DiaryController implements DiarySwagger {
 
     @PatchMapping(value = "/auth/v1.0.0/diaries/{diaryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<DiaryIdResponseDTO> modifyDiary (@PathVariable Long diaryId,
-                                                           @RequestPart("diary") DiaryModifyRequestDTO diary,
-                                                           @RequestPart("place") PlaceRequestDTO place,
-                                                           @RequestPart(value = "diaryImage", required = false)
+                                                           @RequestPart(name = "diary") DiaryModifyRequestDTO diary,
+                                                           @RequestPart(name = "place") PlaceRequestDTO place,
+                                                           @RequestPart(name = "diaryImage", required = false)
                                                                        List<MultipartFile> multipartFiles,
                                                            @Parameter(hidden = true) @AuthenticationPrincipal PrincipalDetails principal) throws IOException {
 
         return new CommonResponse<>(HttpStatus.OK, diaryService.modifyDiary(diaryId, diary, place, principal, multipartFiles));
-
     }
 
     @DeleteMapping("/auth/v1.0.0/diaries/{diaryId}")
