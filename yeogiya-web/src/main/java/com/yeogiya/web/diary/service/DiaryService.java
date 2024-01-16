@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,10 +46,10 @@ public class DiaryService {
     @Transactional
     public DiaryIdResponseDTO postDiary(DiarySaveRequestDTO diarySaveRequestDTO,
                                         PlaceRequestDTO placeRequestDTO,
-                                        PrincipalDetails principal,
-                                        List<MultipartFile> multipartFiles) throws IOException {
+                                        List<MultipartFile> multipartFiles,
+                                        String memberId) throws IOException {
 
-        Member member = memberRepository.findById(principal.getUsername())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_MEMBER));
         Diary diary = diarySaveRequestDTO.toEntity(member);
         diaryRepository.save(diary);
@@ -75,12 +76,12 @@ public class DiaryService {
     public DiaryIdResponseDTO modifyDiary(Long diaryId,
                                           DiaryModifyRequestDTO diaryModifyRequestDTO,
                                           PlaceRequestDTO placeRequestDTO,
-                                          PrincipalDetails principal,
-                                          List<MultipartFile> multipartFiles) throws IOException {
+                                          List<MultipartFile> multipartFiles,
+                                          String memberId) throws IOException {
 
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY));
-        validateAccess(principal, diary);
+        validateAccess(memberId, diary);
 
         // 태그
         diaryHashtagService.deleteByDiaryId(diaryId);
@@ -108,11 +109,11 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryIdResponseDTO deleteDiary(Long diaryId, PrincipalDetails principal) {
+    public DiaryIdResponseDTO deleteDiary(Long diaryId, String memberId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(
                 () -> new ClientException.NotFound(EnumErrorCode.NOT_FOUND_DIARY)
         );
-        validateAccess(principal, diary);
+        validateAccess(memberId, diary);
         diaryRepository.delete(diary);
 
         return DiaryIdResponseDTO.builder()
@@ -151,8 +152,8 @@ public class DiaryService {
         return calendarPageResponseDTO;
     }
 
-    private void validateAccess(PrincipalDetails principal, Diary diary) {
-        if (principal.getMember().getMemberId() != diary.getMember().getMemberId()) {
+    private void validateAccess(String memberId, Diary diary) {
+        if (!Objects.equals(memberId, diary.getMember().getId())) {
             throw new ClientException.Forbidden(EnumErrorCode.INVALID_ACCESS);
         }
     }
