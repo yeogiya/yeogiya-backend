@@ -48,7 +48,7 @@ public class ImageUploadService {
         try {
             String serverFileName = createFileName(multipartFile.getOriginalFilename());
             String thumbnailFileName = getThumbnailFileName(serverFileName);
-            return s3Uploader.uploadFile(resizeAttachment(thumbnailFileName, getFileFormatName(multipartFile), multipartFile, 100, 100), thumbnailFileName);
+            return s3Uploader.uploadFile(resizeAttachment(thumbnailFileName, getFileFormatName(multipartFile), multipartFile, 240, 240), thumbnailFileName);
         } catch (Exception e) {
             throw new RuntimeException(e); // TODO: 추후 커스텀 에러로 변경
         }
